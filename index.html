@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Indy Ski Consultant & Bull; 2026 Directory</title>
+    <title>Indy Ski Consultant &bull; 2026 Directory</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
             theme: {
@@ -19,12 +19,15 @@
                     colors: {
                         indy: {
                             gold: '#f59e0b',
-                            goldLight: '#fbbf24',
+                            goldLight: '#fef3c7',
                             goldHover: '#d97706',
-                            dark: '#080d16',
-                            card: '#111928',
-                            cardBorder: '#1f2a3d',
-                            blue: '#0284c7'
+                            goldDark: '#b45309',
+                            dark: '#0f172a',
+                            slate: '#334155',
+                            lightBg: '#f8fafc',
+                            card: '#ffffff',
+                            cardBorder: '#e2e8f0',
+                            cardBorderHover: '#cbd5e1'
                         }
                     }
                 }
@@ -33,124 +36,122 @@
     </script>
     <style>
         ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #080d16; }
-        ::-webkit-scrollbar-thumb { background: #1f2a3d; border-radius: 4px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #f59e0b; }
     </style>
 </head>
-<body class="bg-indy-dark text-slate-100 font-sans antialiased min-h-screen selection:bg-indy-gold selection:text-indy-dark">
+<body class="bg-indy-lightBg text-slate-800 font-sans antialiased min-h-screen selection:bg-indy-gold selection:text-white">
 
-    <!-- Top Indy Brand Bar -->
-    <div class="bg-gradient-to-r from-indy-gold via-amber-400 to-yellow-500 text-indy-dark text-[11px] font-black uppercase tracking-widest py-1.5 px-4 text-center">
+    <!-- Top Indy Brand Header Bar -->
+    <div class="bg-gradient-to-r from-indy-gold via-amber-400 to-yellow-500 text-slate-900 text-[11px] font-black uppercase tracking-widest py-2 px-4 text-center shadow-sm">
         AUTHENTIC INDEPENDENT RESORTS &bull; 2026 SEASON PASS CONSULTANT
     </div>
 
     <div class="max-w-7xl mx-auto p-4 md:p-8 space-y-8">
         
-        <!-- Indy Hero & Pass Dashboard -->
-        <header class="bg-indy-card border border-indy-cardBorder rounded-3xl p-6 md:p-8 shadow-2xl relative overflow-hidden">
-            <div class="absolute -top-24 -right-24 w-96 h-96 bg-indy-gold/5 rounded-full blur-3xl pointer-events-none"></div>
-
+        <!-- Header & Pass Dashboard -->
+        <header class="bg-indy-card border border-indy-cardBorder rounded-3xl p-6 md:p-8 shadow-sm relative overflow-hidden">
             <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 relative z-10">
                 <div>
                     <div class="flex items-center gap-2.5 mb-2">
-                        <span class="px-2.5 py-0.5 rounded-full bg-indy-gold text-indy-dark font-black text-xs uppercase tracking-wider">INDY PASS</span>
-                        <span class="text-xs text-slate-400 font-mono tracking-tight">BASECAMP: 538 PLAINVILLE AVE &bull; UNIONVILLE, CT</span>
+                        <span class="px-2.5 py-0.5 rounded-full bg-amber-100 text-indy-goldDark font-black text-xs uppercase tracking-wider border border-amber-200">INDY PASS</span>
+                        <span class="text-xs text-slate-500 font-mono tracking-tight font-semibold">BASECAMP: 538 PLAINVILLE AVE &bull; UNIONVILLE, CT</span>
                     </div>
-                    <h1 class="text-3xl md:text-5xl font-black tracking-tight text-white uppercase">
-                        OUR PARTNER <span class="text-transparent bg-clip-text bg-gradient-to-r from-indy-gold to-amber-300">RESORTS</span>
+                    <h1 class="text-3xl md:text-5xl font-black tracking-tight text-slate-900 uppercase">
+                        OUR PARTNER <span class="text-indy-goldHover">RESORTS</span>
                     </h1>
-                    <p class="text-slate-400 text-sm mt-1 max-w-xl">
+                    <p class="text-slate-600 text-sm mt-1 max-w-xl font-medium">
                         Uncrowded, authentic ski destinations across North America. Real-time pass burn-down tracking for Ricardo, Lilli, and Alex.
                     </p>
                 </div>
                 
                 <!-- Skier Switcher -->
-                <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 bg-indy-dark/90 p-1.5 rounded-2xl border border-indy-cardBorder">
-                    <button onclick="setActiveSkier('all')" id="skier-tab-all" class="skier-tab px-4 py-2 rounded-xl text-xs font-bold transition bg-indy-gold text-indy-dark shadow-md">GROUP VIEW</button>
-                    <button onclick="setActiveSkier('Ricardo')" id="skier-tab-Ricardo" class="skier-tab px-4 py-2 rounded-xl text-xs font-bold text-slate-400 hover:text-white transition">RICARDO</button>
-                    <button onclick="setActiveSkier('Lilli')" id="skier-tab-Lilli" class="skier-tab px-4 py-2 rounded-xl text-xs font-bold text-slate-400 hover:text-white transition">LILLI</button>
-                    <button onclick="setActiveSkier('Alex')" id="skier-tab-Alex" class="skier-tab px-4 py-2 rounded-xl text-xs font-bold text-slate-400 hover:text-white transition">ALEX</button>
+                <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-1.5 bg-slate-100 p-1.5 rounded-2xl border border-slate-200">
+                    <button onclick="setActiveSkier('all')" id="skier-tab-all" class="skier-tab px-4 py-2 rounded-xl text-xs font-bold transition bg-white text-slate-900 shadow-sm border border-slate-200/80">GROUP VIEW</button>
+                    <button onclick="setActiveSkier('Ricardo')" id="skier-tab-Ricardo" class="skier-tab px-4 py-2 rounded-xl text-xs font-bold text-slate-500 hover:text-slate-900 transition">RICARDO</button>
+                    <button onclick="setActiveSkier('Lilli')" id="skier-tab-Lilli" class="skier-tab px-4 py-2 rounded-xl text-xs font-bold text-slate-500 hover:text-slate-900 transition">LILLI</button>
+                    <button onclick="setActiveSkier('Alex')" id="skier-tab-Alex" class="skier-tab px-4 py-2 rounded-xl text-xs font-bold text-slate-500 hover:text-slate-900 transition">ALEX</button>
                 </div>
             </div>
 
             <!-- Stats Bar -->
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-6 pt-6 border-t border-indy-cardBorder/80">
-                <div class="bg-indy-dark/60 border border-indy-cardBorder p-4 rounded-2xl">
-                    <div class="text-[10px] text-slate-400 uppercase font-black tracking-wider">Group Redeemed</div>
-                    <div class="text-2xl font-black text-indy-gold mt-1"><span id="stat-group-total">0</span> <span class="text-xs text-slate-500 font-semibold">/ 322</span></div>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-6 pt-6 border-t border-slate-100">
+                <div class="bg-slate-50 border border-slate-200 p-4 rounded-2xl">
+                    <div class="text-[10px] text-slate-500 uppercase font-black tracking-wider">Group Redeemed</div>
+                    <div class="text-2xl font-black text-indy-goldDark mt-1"><span id="stat-group-total">0</span> <span class="text-xs text-slate-400 font-semibold">/ 322</span></div>
                 </div>
-                <div class="bg-indy-dark/60 border border-indy-cardBorder p-4 rounded-2xl">
-                    <div class="text-[10px] text-slate-400 uppercase font-black tracking-wider">Ricardo</div>
-                    <div class="text-2xl font-black text-cyan-400 mt-1"><span id="stat-ricardo">0</span> <span class="text-xs text-slate-500 font-semibold">days</span></div>
+                <div class="bg-slate-50 border border-slate-200 p-4 rounded-2xl">
+                    <div class="text-[10px] text-slate-500 uppercase font-black tracking-wider">Ricardo</div>
+                    <div class="text-2xl font-black text-sky-600 mt-1"><span id="stat-ricardo">0</span> <span class="text-xs text-slate-400 font-semibold">days</span></div>
                 </div>
-                <div class="bg-indy-dark/60 border border-indy-cardBorder p-4 rounded-2xl">
-                    <div class="text-[10px] text-slate-400 uppercase font-black tracking-wider">Lilli</div>
-                    <div class="text-2xl font-black text-purple-400 mt-1"><span id="stat-lilli">0</span> <span class="text-xs text-slate-500 font-semibold">days</span></div>
+                <div class="bg-slate-50 border border-slate-200 p-4 rounded-2xl">
+                    <div class="text-[10px] text-slate-500 uppercase font-black tracking-wider">Lilli</div>
+                    <div class="text-2xl font-black text-purple-600 mt-1"><span id="stat-lilli">0</span> <span class="text-xs text-slate-400 font-semibold">days</span></div>
                 </div>
-                <div class="bg-indy-dark/60 border border-indy-cardBorder p-4 rounded-2xl">
-                    <div class="text-[10px] text-slate-400 uppercase font-black tracking-wider">Alex</div>
-                    <div class="text-2xl font-black text-amber-400 mt-1"><span id="stat-alex">0</span> <span class="text-xs text-slate-500 font-semibold">days</span></div>
+                <div class="bg-slate-50 border border-slate-200 p-4 rounded-2xl">
+                    <div class="text-[10px] text-slate-500 uppercase font-black tracking-wider">Alex</div>
+                    <div class="text-2xl font-black text-amber-600 mt-1"><span id="stat-alex">0</span> <span class="text-xs text-slate-400 font-semibold">days</span></div>
                 </div>
             </div>
 
             <!-- Season Utilization Progress Bar -->
             <div class="mt-5 pt-3">
-                <div class="flex justify-between text-xs text-slate-400 font-semibold mb-2">
+                <div class="flex justify-between text-xs text-slate-500 font-bold mb-2">
                     <span id="progress-label" class="uppercase tracking-wider text-[11px]">Pass Utilization</span>
-                    <span id="stat-pct" class="font-mono text-indy-gold">0%</span>
+                    <span id="stat-pct" class="font-mono text-indy-goldDark">0%</span>
                 </div>
-                <div class="w-full bg-indy-dark h-2.5 rounded-full overflow-hidden p-0.5 border border-indy-cardBorder">
-                    <div id="stat-progress-bar" class="bg-gradient-to-r from-indy-gold to-yellow-400 h-full rounded-full w-0 transition-all duration-500"></div>
+                <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden p-0.5 border border-slate-200">
+                    <div id="stat-progress-bar" class="bg-gradient-to-r from-amber-400 to-indy-goldHover h-full rounded-full w-0 transition-all duration-500"></div>
                 </div>
             </div>
         </header>
 
         <!-- Geographic Region Pill Tabs -->
         <div class="space-y-3">
-            <div class="flex items-center justify-between text-xs font-black tracking-wider uppercase text-slate-400 px-1">
+            <div class="flex items-center justify-between text-xs font-black tracking-wider uppercase text-slate-500 px-1">
                 <span>Filter By Region</span>
-                <span id="resort-count-badge" class="font-mono text-slate-400 font-medium">Showing 0 resorts</span>
+                <span id="resort-count-badge" class="font-mono text-slate-500 font-semibold">Showing 0 resorts</span>
             </div>
             <div class="flex flex-wrap gap-2 text-xs font-bold">
-                <button onclick="setRegion('all')" id="region-all" class="region-btn px-5 py-2.5 rounded-full bg-indy-gold text-indy-dark shadow-lg shadow-indy-gold/20 transition">All Resorts (161)</button>
-                <button onclick="setRegion('Northeast')" id="region-Northeast" class="region-btn px-5 py-2.5 rounded-full bg-indy-card border border-indy-cardBorder text-slate-300 hover:text-white hover:border-slate-600 transition">Northeast (40)</button>
-                <button onclick="setRegion('Mid-Atlantic')" id="region-Mid-Atlantic" class="region-btn px-5 py-2.5 rounded-full bg-indy-card border border-indy-cardBorder text-slate-300 hover:text-white hover:border-slate-600 transition">Mid-Atlantic (18)</button>
-                <button onclick="setRegion('Midwest')" id="region-Midwest" class="region-btn px-5 py-2.5 rounded-full bg-indy-card border border-indy-cardBorder text-slate-300 hover:text-white hover:border-slate-600 transition">Midwest (48)</button>
-                <button onclick="setRegion('West & Rockies')" id="region-West & Rockies" class="region-btn px-5 py-2.5 rounded-full bg-indy-card border border-indy-cardBorder text-slate-300 hover:text-white hover:border-slate-600 transition">West &amp; Rockies (44)</button>
-                <button onclick="setRegion('Canada')" id="region-Canada" class="region-btn px-5 py-2.5 rounded-full bg-indy-card border border-indy-cardBorder text-slate-300 hover:text-white hover:border-slate-600 transition">Canada (11)</button>
+                <button onclick="setRegion('all')" id="region-all" class="region-btn px-5 py-2.5 rounded-full bg-slate-900 text-white shadow-sm transition">All Resorts (161)</button>
+                <button onclick="setRegion('Northeast')" id="region-Northeast" class="region-btn px-5 py-2.5 rounded-full bg-white border border-slate-200 text-slate-600 hover:text-slate-900 hover:border-slate-300 transition">Northeast (40)</button>
+                <button onclick="setRegion('Mid-Atlantic')" id="region-Mid-Atlantic" class="region-btn px-5 py-2.5 rounded-full bg-white border border-slate-200 text-slate-600 hover:text-slate-900 hover:border-slate-300 transition">Mid-Atlantic (18)</button>
+                <button onclick="setRegion('Midwest')" id="region-Midwest" class="region-btn px-5 py-2.5 rounded-full bg-white border border-slate-200 text-slate-600 hover:text-slate-900 hover:border-slate-300 transition">Midwest (48)</button>
+                <button onclick="setRegion('West & Rockies')" id="region-West & Rockies" class="region-btn px-5 py-2.5 rounded-full bg-white border border-slate-200 text-slate-600 hover:text-slate-900 hover:border-slate-300 transition">West &amp; Rockies (44)</button>
+                <button onclick="setRegion('Canada')" id="region-Canada" class="region-btn px-5 py-2.5 rounded-full bg-white border border-slate-200 text-slate-600 hover:text-slate-900 hover:border-slate-300 transition">Canada (11)</button>
             </div>
         </div>
 
         <!-- Filter Bar, Search, and Sort -->
-        <div class="flex flex-col lg:flex-row justify-between items-stretch lg:items-center gap-4 bg-indy-card p-4 rounded-2xl border border-indy-cardBorder">
+        <div class="flex flex-col lg:flex-row justify-between items-stretch lg:items-center gap-4 bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
             <!-- Search Input -->
             <div class="relative flex-1">
-                <input type="text" id="search-input" oninput="handleSearch()" placeholder="Search mountain or state (e.g. Magic Mountain, VT, Jay Peak)..." class="w-full bg-indy-dark border border-indy-cardBorder rounded-xl px-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indy-gold transition">
+                <input type="text" id="search-input" oninput="handleSearch()" placeholder="Search mountain or state (e.g. Magic Mountain, VT, Jay Peak)..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-indy-gold focus:bg-white transition">
             </div>
 
             <!-- Trip Type Pills -->
             <div class="flex flex-wrap gap-1.5 text-xs font-bold">
-                <button onclick="setFilter('all')" id="filter-all" class="filter-btn px-3 py-1.5 rounded-lg bg-indy-gold text-indy-dark transition">All</button>
-                <button onclick="setFilter('daytrip')" id="filter-daytrip" class="filter-btn px-3 py-1.5 rounded-lg bg-indy-dark border border-indy-cardBorder text-slate-400 hover:text-white transition">⚡ &lt; 2 hrs</button>
-                <button onclick="setFilter('weekender')" id="filter-weekender" class="filter-btn px-3 py-1.5 rounded-lg bg-indy-dark border border-indy-cardBorder text-slate-400 hover:text-white transition">🏔️ 2-5 hrs</button>
-                <button onclick="setFilter('flight')" id="filter-flight" class="filter-btn px-3 py-1.5 rounded-lg bg-indy-dark border border-indy-cardBorder text-slate-400 hover:text-white transition">✈️ Fly-Out</button>
-                <button onclick="setFilter('available')" id="filter-available" class="filter-btn px-3 py-1.5 rounded-lg bg-indy-dark border border-indy-cardBorder text-slate-400 hover:text-white transition">Days Left</button>
+                <button onclick="setFilter('all')" id="filter-all" class="filter-btn px-3 py-1.5 rounded-lg bg-slate-900 text-white transition">All</button>
+                <button onclick="setFilter('daytrip')" id="filter-daytrip" class="filter-btn px-3 py-1.5 rounded-lg bg-slate-100 border border-slate-200 text-slate-600 hover:text-slate-900 transition">⚡ &lt; 2 hrs</button>
+                <button onclick="setFilter('weekender')" id="filter-weekender" class="filter-btn px-3 py-1.5 rounded-lg bg-slate-100 border border-slate-200 text-slate-600 hover:text-slate-900 transition">🏔️ 2-5 hrs</button>
+                <button onclick="setFilter('flight')" id="filter-flight" class="filter-btn px-3 py-1.5 rounded-lg bg-slate-100 border border-slate-200 text-slate-600 hover:text-slate-900 transition">✈️ Fly-Out</button>
+                <button onclick="setFilter('available')" id="filter-available" class="filter-btn px-3 py-1.5 rounded-lg bg-slate-100 border border-slate-200 text-slate-600 hover:text-slate-900 transition">Days Left</button>
             </div>
 
             <!-- Sort Actions -->
             <div class="flex gap-2 text-xs font-semibold">
-                <button onclick="setSort('Drive Time')" id="sort-drive" class="px-3.5 py-2 rounded-xl bg-indy-dark border border-indy-cardBorder text-slate-300 hover:bg-slate-800 transition flex items-center gap-1.5">
+                <button onclick="setSort('Drive Time')" id="sort-drive" class="px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-700 hover:bg-slate-100 transition flex items-center gap-1.5">
                     <span>🚗 Drive Time</span>
                 </button>
-                <button onclick="setSort('Vertical Drop')" id="sort-vert" class="px-3.5 py-2 rounded-xl bg-indy-dark border border-indy-cardBorder text-slate-300 hover:bg-slate-800 transition flex items-center gap-1.5">
+                <button onclick="setSort('Vertical Drop')" id="sort-vert" class="px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-700 hover:bg-slate-100 transition flex items-center gap-1.5">
                     <span>↓ Vertical</span>
                 </button>
             </div>
         </div>
 
         <!-- Resort Cards Grid -->
-        <div id="loading" class="text-center py-24 text-slate-400 animate-pulse font-medium">Loading authentic Indy Pass destinations...</div>
+        <div id="loading" class="text-center py-24 text-slate-500 font-medium animate-pulse">Loading authentic Indy Pass destinations...</div>
         <div id="resort-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
 
     </div>
@@ -181,7 +182,7 @@
                 updateDashboard();
             } catch (err) {
                 console.error(err);
-                document.getElementById('loading').innerHTML = '<span class="text-red-400">Failed to load resorts. Ensure Google Apps Script deployment is active.</span>';
+                document.getElementById('loading').innerHTML = '<span class="text-red-600 font-semibold">Failed to load resorts. Ensure Google Apps Script deployment is active.</span>';
             }
         }
 
@@ -210,11 +211,11 @@
         function setActiveSkier(skier) {
             activeSkier = skier;
             document.querySelectorAll('.skier-tab').forEach(tab => {
-                tab.className = 'skier-tab px-4 py-2 rounded-xl text-xs font-bold text-slate-400 hover:text-white transition';
+                tab.className = 'skier-tab px-4 py-2 rounded-xl text-xs font-bold text-slate-500 hover:text-slate-900 transition';
             });
             const activeTab = document.getElementById(`skier-tab-${skier}`);
             if (activeTab) {
-                activeTab.className = 'skier-tab px-4 py-2 rounded-xl text-xs font-bold transition bg-indy-gold text-indy-dark shadow-md';
+                activeTab.className = 'skier-tab px-4 py-2 rounded-xl text-xs font-bold transition bg-white text-slate-900 shadow-sm border border-slate-200/80';
             }
             updateDashboard();
         }
@@ -222,11 +223,11 @@
         function setRegion(region) {
             activeRegion = region;
             document.querySelectorAll('.region-btn').forEach(btn => {
-                btn.className = 'region-btn px-5 py-2.5 rounded-full bg-indy-card border border-indy-cardBorder text-slate-300 hover:text-white hover:border-slate-600 transition';
+                btn.className = 'region-btn px-5 py-2.5 rounded-full bg-white border border-slate-200 text-slate-600 hover:text-slate-900 hover:border-slate-300 transition';
             });
             const activeBtn = document.getElementById(`region-${region}`);
             if (activeBtn) {
-                activeBtn.className = 'region-btn px-5 py-2.5 rounded-full bg-indy-gold text-indy-dark font-bold shadow-lg shadow-indy-gold/20 transition';
+                activeBtn.className = 'region-btn px-5 py-2.5 rounded-full bg-slate-900 text-white font-bold shadow-sm transition';
             }
             updateDashboard();
         }
@@ -234,11 +235,11 @@
         function setFilter(type) {
             activeFilter = type;
             document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.className = 'filter-btn px-3 py-1.5 rounded-lg bg-indy-dark border border-indy-cardBorder text-slate-400 hover:text-white transition';
+                btn.className = 'filter-btn px-3 py-1.5 rounded-lg bg-slate-100 border border-slate-200 text-slate-600 hover:text-slate-900 transition';
             });
             const activeBtn = document.getElementById(`filter-${type}`);
             if (activeBtn) {
-                activeBtn.className = 'filter-btn px-3 py-1.5 rounded-lg bg-indy-gold text-indy-dark font-bold transition';
+                activeBtn.className = 'filter-btn px-3 py-1.5 rounded-lg bg-slate-900 text-white font-bold transition';
             }
             updateDashboard();
         }
@@ -327,7 +328,7 @@
             grid.innerHTML = '';
 
             if (resorts.length === 0) {
-                grid.innerHTML = '<div class="col-span-full text-center py-20 text-slate-500 font-medium">No mountains found matching your search.</div>';
+                grid.innerHTML = '<div class="col-span-full text-center py-20 text-slate-400 font-medium">No mountains found matching your search.</div>';
                 return;
             }
 
@@ -346,7 +347,7 @@
                 const isSelectedMaxed = activeSkier !== 'all' && (parseInt(r[`${activeSkier} Days`]) >= 2);
 
                 const card = document.createElement('div');
-                card.className = `group bg-indy-card border rounded-3xl p-6 flex flex-col justify-between transition-all duration-300 ${(isAllMaxed || isSelectedMaxed) ? 'border-red-950/40 bg-indy-dark/40 opacity-50' : 'border-indy-cardBorder hover:border-indy-gold/40 hover:shadow-2xl hover:shadow-indy-gold/5'}`;
+                card.className = `group bg-indy-card border rounded-3xl p-6 flex flex-col justify-between transition-all duration-300 shadow-sm ${(isAllMaxed || isSelectedMaxed) ? 'border-red-200 bg-slate-50/60 opacity-60' : 'border-indy-cardBorder hover:border-slate-300 hover:shadow-lg'}`;
 
                 card.innerHTML = `
                     <div>
@@ -354,42 +355,42 @@
                         <div class="flex justify-between items-start gap-2">
                             <div>
                                 <div class="flex items-center gap-2 flex-wrap">
-                                    <span class="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 font-mono">${r.State}</span>
-                                    <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-indy-dark text-slate-400 border border-indy-cardBorder">${r.Region}</span>
+                                    <span class="text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700 font-mono border border-slate-200">${r.State}</span>
+                                    <span class="text-[10px] font-bold uppercase px-2.5 py-0.5 rounded-full bg-slate-50 text-slate-500 border border-slate-200">${r.Region}</span>
                                 </div>
-                                <h3 class="font-extrabold text-xl text-white mt-2 group-hover:text-indy-gold transition-colors tracking-tight">${r.Resort}</h3>
+                                <h3 class="font-extrabold text-xl text-slate-900 mt-2.5 group-hover:text-indy-goldDark transition-colors tracking-tight">${r.Resort}</h3>
                             </div>
                         </div>
 
                         <!-- Mountain Stats Pill Strip -->
                         <div class="grid grid-cols-2 gap-2 mt-4">
-                            <div class="bg-indy-dark/80 p-2.5 rounded-xl border border-indy-cardBorder/70">
+                            <div class="bg-slate-50 p-2.5 rounded-2xl border border-slate-100">
                                 <div class="text-[9px] uppercase tracking-wider text-slate-400 font-bold">Vertical Drop</div>
-                                <div class="text-sm font-black font-mono text-white mt-0.5">${Number(r['Vertical Drop']).toLocaleString()} <span class="text-[10px] text-slate-400 font-normal">FT</span></div>
+                                <div class="text-sm font-black font-mono text-slate-900 mt-0.5">${Number(r['Vertical Drop']).toLocaleString()} <span class="text-[10px] text-slate-400 font-normal">FT</span></div>
                             </div>
-                            <div class="bg-indy-dark/80 p-2.5 rounded-xl border border-indy-cardBorder/70">
+                            <div class="bg-slate-50 p-2.5 rounded-2xl border border-slate-100">
                                 <div class="text-[9px] uppercase tracking-wider text-slate-400 font-bold">From Unionville</div>
-                                <div class="text-sm font-black font-mono text-white mt-0.5">${travelDisplay}</div>
+                                <div class="text-sm font-black font-mono text-slate-900 mt-0.5">${travelDisplay}</div>
                             </div>
                         </div>
 
                         <!-- Skier Pass Allocation -->
-                        <div class="mt-5 pt-4 border-t border-indy-cardBorder/80 space-y-2">
+                        <div class="mt-5 pt-4 border-t border-slate-100 space-y-2">
                             <div class="text-[10px] font-black tracking-wider uppercase text-slate-400 mb-1">Pass Status (2 Days Each)</div>
                             ${SKIERS.map(s => {
                                 const days = parseInt(r[s.key]) || 0;
                                 const isDimmed = activeSkier !== 'all' && activeSkier !== s.id;
                                 return `
-                                    <div class="flex items-center justify-between text-xs py-1.5 px-3 rounded-xl transition ${isDimmed ? 'opacity-30' : 'bg-indy-dark/70 border border-indy-cardBorder/60'}">
-                                        <span class="font-bold text-slate-300 w-16">${s.label}</span>
+                                    <div class="flex items-center justify-between text-xs py-1.5 px-3 rounded-xl transition ${isDimmed ? 'opacity-30' : 'bg-slate-50/80 border border-slate-200/60'}">
+                                        <span class="font-bold text-slate-700 w-16">${s.label}</span>
                                         <div class="flex items-center gap-2.5">
-                                            <div class="flex gap-1.5 p-1 bg-indy-dark rounded-lg border border-indy-cardBorder">
-                                                <div class="w-3.5 h-3.5 rounded-md ${days >= 1 ? 'bg-indy-gold shadow-sm shadow-indy-gold/50' : 'bg-slate-800'}"></div>
-                                                <div class="w-3.5 h-3.5 rounded-md ${days >= 2 ? 'bg-indy-gold shadow-sm shadow-indy-gold/50' : 'bg-slate-800'}"></div>
+                                            <div class="flex gap-1.5 p-1 bg-white rounded-lg border border-slate-200 shadow-2xs">
+                                                <div class="w-3.5 h-3.5 rounded-md transition-colors ${days >= 1 ? 'bg-indy-gold shadow-xs' : 'bg-slate-200'}"></div>
+                                                <div class="w-3.5 h-3.5 rounded-md transition-colors ${days >= 2 ? 'bg-indy-gold shadow-xs' : 'bg-slate-200'}"></div>
                                             </div>
                                             <div class="flex items-center gap-1">
-                                                <button onclick="modifyDays('${r.Resort.replace(/'/g, "\\'")}', '${s.key}', 1)" class="w-6 h-6 flex items-center justify-center bg-slate-800 hover:bg-indy-gold hover:text-indy-dark rounded-lg text-white text-xs font-black transition">+</button>
-                                                <button onclick="modifyDays('${r.Resort.replace(/'/g, "\\'")}', '${s.key}', -1)" class="w-6 h-6 flex items-center justify-center bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-400 text-xs font-black transition">-</button>
+                                                <button onclick="modifyDays('${r.Resort.replace(/'/g, "\\'")}', '${s.key}', 1)" class="w-6 h-6 flex items-center justify-center bg-white border border-slate-200 hover:bg-indy-gold hover:text-white rounded-lg text-slate-700 text-xs font-black shadow-2xs transition">+</button>
+                                                <button onclick="modifyDays('${r.Resort.replace(/'/g, "\\'")}', '${s.key}', -1)" class="w-6 h-6 flex items-center justify-center bg-white border border-slate-200 hover:bg-slate-100 rounded-lg text-slate-500 text-xs font-black shadow-2xs transition">-</button>
                                             </div>
                                         </div>
                                     </div>
@@ -399,14 +400,14 @@
                     </div>
 
                     <!-- Action Bar Tray -->
-                    <div class="mt-6 pt-4 border-t border-indy-cardBorder/80 flex items-center justify-between text-xs">
-                        <a href="${navUrl}" target="_blank" rel="noopener" class="text-indy-gold hover:text-amber-300 font-bold flex items-center gap-1 transition">
+                    <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs">
+                        <a href="${navUrl}" target="_blank" rel="noopener" class="text-indy-goldDark hover:text-amber-700 font-bold flex items-center gap-1 transition">
                             Directions ↗
                         </a>
-                        <a href="${trailMapUrl}" target="_blank" rel="noopener" class="text-slate-400 hover:text-slate-200 font-medium transition">
+                        <a href="${trailMapUrl}" target="_blank" rel="noopener" class="text-slate-500 hover:text-slate-800 font-semibold transition">
                             Trail Map ↗
                         </a>
-                        <a href="${indyResortUrl}" target="_blank" rel="noopener" class="text-slate-400 hover:text-slate-200 font-medium transition">
+                        <a href="${indyResortUrl}" target="_blank" rel="noopener" class="text-slate-500 hover:text-slate-800 font-semibold transition">
                             Indy Info ↗
                         </a>
                     </div>
