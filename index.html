@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Indy Ski Consultant &bull; 2026 Directory</title>
+    <title>Indy Ski Consultant &bull; 2026 Directory & Trip Planner</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -45,7 +45,7 @@
 
     <!-- Top Indy Brand Header Bar -->
     <div class="bg-gradient-to-r from-indy-gold via-amber-400 to-yellow-500 text-slate-900 text-[11px] font-black uppercase tracking-widest py-2 px-4 text-center shadow-sm">
-        AUTHENTIC INDEPENDENT RESORTS &bull; 2026 SEASON PASS CONSULTANT
+        AUTHENTIC INDEPENDENT RESORTS &bull; 2026 SEASON PASS & TRIP PLANNER
     </div>
 
     <div class="max-w-7xl mx-auto p-4 md:p-8 space-y-8">
@@ -62,7 +62,7 @@
                         OUR PARTNER <span class="text-indy-goldHover">RESORTS</span>
                     </h1>
                     <p class="text-slate-600 text-sm mt-1 max-w-xl font-medium">
-                        Uncrowded, authentic ski destinations across North America. Real-time pass burn-down tracking for Ricardo, Lilli, and Alex.
+                        Explore 161 authentic mountains. Track days for Ricardo, Lilli, and Alex, and plan day trips or multi-day getaways with live cost projections.
                     </p>
                 </div>
                 
@@ -95,7 +95,7 @@
                 </div>
             </div>
 
-            <!-- Season Utilization Progress Bar -->
+            <!-- Pass Progress Bar -->
             <div class="mt-5 pt-3">
                 <div class="flex justify-between text-xs text-slate-500 font-bold mb-2">
                     <span id="progress-label" class="uppercase tracking-wider text-[11px]">Pass Utilization</span>
@@ -107,7 +107,7 @@
             </div>
         </header>
 
-        <!-- Geographic Region Pill Tabs -->
+        <!-- Geographic Regions Navigation -->
         <div class="space-y-3">
             <div class="flex items-center justify-between text-xs font-black tracking-wider uppercase text-slate-500 px-1">
                 <span>Filter By Region</span>
@@ -127,7 +127,7 @@
         <div class="flex flex-col lg:flex-row justify-between items-stretch lg:items-center gap-4 bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
             <!-- Search Input -->
             <div class="relative flex-1">
-                <input type="text" id="search-input" oninput="handleSearch()" placeholder="Search mountain or state (e.g. Magic Mountain, VT, Jay Peak)..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-indy-gold focus:bg-white transition">
+                <input type="text" id="search-input" oninput="handleSearch()" placeholder="Search mountain or state (e.g. Magic Mountain, VT, Jay Peak, CO)..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-indy-gold focus:bg-white transition">
             </div>
 
             <!-- Trip Type Pills -->
@@ -156,9 +156,141 @@
 
     </div>
 
+    <!-- TRIP PLANNER MODAL -->
+    <div id="planner-modal" class="hidden fixed inset-0 z-50 overflow-y-auto bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl border border-slate-200 max-w-2xl w-full p-6 md:p-8 shadow-2xl relative space-y-6">
+            
+            <!-- Modal Header -->
+            <div class="flex justify-between items-start">
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span id="planner-state-badge" class="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 font-mono">VT</span>
+                        <span id="planner-region-badge" class="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-amber-100 text-indy-goldDark">NORTHEAST</span>
+                    </div>
+                    <h2 id="planner-resort-title" class="text-2xl font-black text-slate-900 mt-2">Magic Mountain</h2>
+                    <p class="text-xs text-slate-500 mt-0.5">Route origin: 538 Plainville Ave, Unionville, CT</p>
+                </div>
+                <button onclick="closePlanner()" class="text-slate-400 hover:text-slate-700 text-2xl font-bold p-1">&times;</button>
+            </div>
+
+            <!-- Planner Mode Selector: Day Trip vs Multi-Day -->
+            <div class="grid grid-cols-2 gap-2 bg-slate-100 p-1.5 rounded-2xl border border-slate-200 text-xs font-bold">
+                <button onclick="setPlannerMode('day')" id="btn-mode-day" class="py-2.5 rounded-xl bg-white text-slate-900 shadow-sm transition">⚡ DAY TRIP (OUT &amp; BACK)</button>
+                <button onclick="setPlannerMode('multi')" id="btn-mode-multi" class="py-2.5 rounded-xl text-slate-600 hover:text-slate-900 transition">🏔️ MULTI-DAY GETAWAY</button>
+            </div>
+
+            <!-- Multi-Day Controls (Nights & Guests) -->
+            <div id="multi-controls" class="hidden grid grid-cols-2 gap-3 p-3.5 bg-slate-50 rounded-2xl border border-slate-200">
+                <div>
+                    <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">Length of Stay</label>
+                    <select id="plan-nights" onchange="calculatePlanCosts()" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold text-slate-800 focus:outline-none focus:border-indy-gold">
+                        <option value="1">1 Night (Weekend Sneak)</option>
+                        <option value="2" selected>2 Nights (Classic Weekend)</option>
+                        <option value="3">3 Nights (Holiday Long Weekend)</option>
+                        <option value="4">4 Nights (Extended Mountain Stay)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">Skier Party Size</label>
+                    <select id="plan-skiers" onchange="calculatePlanCosts()" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold text-slate-800 focus:outline-none focus:border-indy-gold">
+                        <option value="1">Solo Skier</option>
+                        <option value="2">2 Skiers</option>
+                        <option value="3" selected>3 Skiers (Ricardo, Lilli, Alex)</option>
+                        <option value="4">4 Skiers (Full Car)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Travel Calculation Card (Gas or Flight) -->
+            <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
+                <div class="flex justify-between items-center text-xs font-bold">
+                    <span class="text-slate-700 uppercase tracking-wider text-[11px]">Transportation Logistics</span>
+                    <span id="plan-travel-tag" class="text-xs px-2 py-0.5 rounded-md bg-white border border-slate-200 font-mono text-slate-700">🚗 Driving</span>
+                </div>
+
+                <!-- Drive / Gas Details -->
+                <div id="plan-drive-box" class="grid grid-cols-3 gap-2 text-center pt-1">
+                    <div class="bg-white p-2.5 rounded-xl border border-slate-200">
+                        <div class="text-[9px] uppercase tracking-wider text-slate-400 font-bold">Roundtrip Miles</div>
+                        <div id="plan-miles" class="text-base font-black font-mono text-slate-900 mt-0.5">260 mi</div>
+                    </div>
+                    <div class="bg-white p-2.5 rounded-xl border border-slate-200">
+                        <div class="text-[9px] uppercase tracking-wider text-slate-400 font-bold">Drive Time</div>
+                        <div id="plan-duration" class="text-base font-black font-mono text-slate-900 mt-0.5">4.6 hrs RT</div>
+                    </div>
+                    <div class="bg-white p-2.5 rounded-xl border border-slate-200">
+                        <div class="text-[9px] uppercase tracking-wider text-slate-400 font-bold">Est. Fuel Cost</div>
+                        <div id="plan-fuel" class="text-base font-black font-mono text-amber-600 mt-0.5">$55</div>
+                        <div class="text-[8px] text-slate-400 mt-0.5">@ $4.25/gal &bull; 20 MPG</div>
+                    </div>
+                </div>
+
+                <!-- Flight Details (Triggered for long haul) -->
+                <div id="plan-flight-box" class="hidden bg-sky-50 border border-sky-100 p-3.5 rounded-xl text-xs space-y-2">
+                    <div class="flex justify-between items-center">
+                        <span class="font-bold text-sky-900">✈️ Airfare from Bradley (BDL)</span>
+                        <span id="plan-flight-price" class="font-black text-sky-800 font-mono">~$280 RT / person</span>
+                    </div>
+                    <p class="text-[11px] text-sky-700">Recommended fly-in mountain. Includes estimated regional SUV rental (~$75/day).</p>
+                    <a id="btn-google-flights" href="#" target="_blank" rel="noopener" class="inline-flex items-center gap-1 text-[11px] font-bold text-sky-700 hover:text-sky-900 underline">
+                        Search BDL Flights on Google ↗
+                    </a>
+                </div>
+            </div>
+
+            <!-- Accommodations Tier Selector (Multi-Day Only) -->
+            <div id="lodging-section" class="hidden space-y-3">
+                <div class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Lodging Tier (Per Night Estimate)</div>
+                <div class="grid grid-cols-3 gap-2 text-xs">
+                    <button onclick="selectTier('value')" id="tier-btn-value" class="tier-btn text-left p-3 rounded-2xl border border-slate-200 bg-white hover:border-slate-300 transition">
+                        <div class="text-[10px] font-bold uppercase text-slate-400">Value</div>
+                        <div class="text-sm font-black text-slate-900 mt-0.5">$110 <span class="text-[10px] text-slate-400 font-normal">/nt</span></div>
+                        <div class="text-[10px] text-slate-500 mt-1">Ski motel / lodge</div>
+                    </button>
+                    <button onclick="selectTier('mid')" id="tier-btn-mid" class="tier-btn text-left p-3 rounded-2xl border-2 border-amber-400 bg-amber-50/50 transition">
+                        <div class="text-[10px] font-bold uppercase text-amber-700">Mid-Grade</div>
+                        <div class="text-sm font-black text-amber-900 mt-0.5">$210 <span class="text-[10px] text-amber-700 font-normal">/nt</span></div>
+                        <div class="text-[10px] text-slate-600 mt-1">Mountain Inn / Condo</div>
+                    </button>
+                    <button onclick="selectTier('luxury')" id="tier-btn-luxury" class="tier-btn text-left p-3 rounded-2xl border border-slate-200 bg-white hover:border-slate-300 transition">
+                        <div class="text-[10px] font-bold uppercase text-slate-400">Luxury</div>
+                        <div class="text-sm font-black text-slate-900 mt-0.5">$540 <span class="text-[10px] text-slate-400 font-normal">/nt</span></div>
+                        <div class="text-[10px] text-slate-500 mt-1">Ski-In/Out Resort</div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Estimated Total Cost Summary Bar -->
+            <div class="bg-slate-900 text-white p-5 rounded-2xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                <div>
+                    <div class="text-[10px] uppercase tracking-wider text-slate-400 font-bold">Estimated Trip Investment</div>
+                    <div class="flex items-baseline gap-2 mt-0.5">
+                        <span id="plan-total-cost" class="text-3xl font-black text-indy-gold">$55</span>
+                        <span id="plan-per-person" class="text-xs text-slate-400 font-medium">($18 / skier)</span>
+                    </div>
+                    <div class="text-[10px] text-slate-400 mt-0.5">*Lift tickets $0 (Indy Pass covers 2 days per skier)</div>
+                </div>
+
+                <div class="flex gap-2 w-full sm:w-auto">
+                    <a id="btn-hotel-search" href="#" target="_blank" rel="noopener" class="hidden flex-1 sm:flex-none px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-center transition">
+                        View Lodging ↗
+                    </a>
+                    <a id="btn-directions" href="#" target="_blank" rel="noopener" class="flex-1 sm:flex-none px-4 py-2.5 rounded-xl bg-indy-gold hover:bg-amber-400 text-slate-900 text-xs font-bold text-center transition">
+                        Start Route ↗
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
     <script>
         const API_URL = 'https://script.google.com/macros/s/AKfycbzGsR7rsHCVbj16HS9Qi2OgK583MhXyRozzOBaZ24Bf0ujdo-xo_3ZdfMOpn5GRqELz3g/exec';
         const BASE_ADDRESS = '538 Plainville Ave, Unionville, CT';
+
+        // Fuel calculation baseline: Current CT/Hartford average regular gas price & SUV consumption
+        const CURRENT_GAS_PRICE = 4.25; // $4.25 / gallon
+        const VEHICLE_MPG = 20.0;       // ~20 MPG average winter driving
 
         const SKIERS = [
             { id: 'Ricardo', key: 'Ricardo Days', label: 'Ricardo', color: 'cyan' },
@@ -172,6 +304,11 @@
         let activeSort = 'Drive Time';
         let activeSkier = 'all';
         let searchQuery = '';
+
+        // Planner active state
+        let currentPlannerResort = null;
+        let plannerMode = 'day'; // 'day' or 'multi'
+        let selectedLodgingTier = 'mid'; // 'value', 'mid', 'luxury'
 
         async function init() {
             try {
@@ -337,7 +474,6 @@
                 const travelDisplay = drive > 8.0 ? '✈️ Long Haul' : `🚗 ${drive} hrs`;
                 const navUrl = `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(BASE_ADDRESS)}&destination=${encodeURIComponent(r.Resort + ' Ski Resort, ' + r.State)}`;
                 const trailMapUrl = `https://www.google.com/search?q=${encodeURIComponent(r.Resort + ' ' + r.State + ' ski trail map')}&btnI=1`;
-                const indyResortUrl = `https://www.indyskipass.com/our-resorts`;
 
                 const rDays = parseInt(r['Ricardo Days']) || 0;
                 const lDays = parseInt(r['Lilli Days']) || 0;
@@ -399,22 +535,160 @@
                         </div>
                     </div>
 
-                    <!-- Action Bar Tray -->
+                    <!-- Action Bar Tray with Trip Planner Button -->
                     <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs">
-                        <a href="${navUrl}" target="_blank" rel="noopener" class="text-indy-goldDark hover:text-amber-700 font-bold flex items-center gap-1 transition">
-                            Directions ↗
-                        </a>
-                        <a href="${trailMapUrl}" target="_blank" rel="noopener" class="text-slate-500 hover:text-slate-800 font-semibold transition">
-                            Trail Map ↗
-                        </a>
-                        <a href="${indyResortUrl}" target="_blank" rel="noopener" class="text-slate-500 hover:text-slate-800 font-semibold transition">
-                            Indy Info ↗
-                        </a>
+                        <button onclick="openPlanner('${r.Resort.replace(/'/g, "\\'")}')" class="px-3.5 py-1.5 rounded-xl bg-amber-50 border border-amber-200 text-indy-goldDark hover:bg-amber-100 font-bold transition flex items-center gap-1">
+                            📅 Plan Trip
+                        </button>
+                        <div class="flex items-center gap-3">
+                            <a href="${navUrl}" target="_blank" rel="noopener" class="text-slate-500 hover:text-slate-800 font-semibold transition">
+                                Maps ↗
+                            </a>
+                            <a href="${trailMapUrl}" target="_blank" rel="noopener" class="text-slate-500 hover:text-slate-800 font-semibold transition">
+                                Trail Map ↗
+                            </a>
+                        </div>
                     </div>
                 `;
 
                 grid.appendChild(card);
             });
+        }
+
+        // --- TRIP PLANNER LOGIC ---
+
+        function openPlanner(resortName) {
+            const r = rawResorts.find(item => item.Resort === resortName);
+            if (!r) return;
+
+            currentPlannerResort = r;
+
+            document.getElementById('planner-resort-title').innerText = r.Resort;
+            document.getElementById('planner-state-badge').innerText = r.State;
+            document.getElementById('planner-region-badge').innerText = r.Region;
+
+            // Default to Day trip if drive <= 2.5 hrs, otherwise Multi-day
+            const driveHrs = parseFloat(r['Drive Time']) || 0;
+            if (driveHrs <= 2.5) {
+                setPlannerMode('day');
+            } else {
+                setPlannerMode('multi');
+            }
+
+            document.getElementById('planner-modal').classList.remove('hidden');
+        }
+
+        function closePlanner() {
+            document.getElementById('planner-modal').classList.add('hidden');
+        }
+
+        function setPlannerMode(mode) {
+            plannerMode = mode;
+            const btnDay = document.getElementById('btn-mode-day');
+            const btnMulti = document.getElementById('btn-mode-multi');
+            const multiControls = document.getElementById('multi-controls');
+            const lodgingSection = document.getElementById('lodging-section');
+            const btnHotel = document.getElementById('btn-hotel-search');
+
+            if (mode === 'day') {
+                btnDay.className = 'py-2.5 rounded-xl bg-white text-slate-900 shadow-sm transition';
+                btnMulti.className = 'py-2.5 rounded-xl text-slate-600 hover:text-slate-900 transition';
+                multiControls.classList.add('hidden');
+                lodgingSection.classList.add('hidden');
+                btnHotel.classList.add('hidden');
+            } else {
+                btnMulti.className = 'py-2.5 rounded-xl bg-white text-slate-900 shadow-sm transition';
+                btnDay.className = 'py-2.5 rounded-xl text-slate-600 hover:text-slate-900 transition';
+                multiControls.classList.remove('hidden');
+                lodgingSection.classList.remove('hidden');
+                btnHotel.classList.remove('hidden');
+            }
+
+            calculatePlanCosts();
+        }
+
+        function selectTier(tier) {
+            selectedLodgingTier = tier;
+            document.querySelectorAll('.tier-btn').forEach(btn => {
+                btn.className = 'tier-btn text-left p-3 rounded-2xl border border-slate-200 bg-white hover:border-slate-300 transition';
+            });
+            const active = document.getElementById(`tier-btn-${tier}`);
+            if (active) {
+                active.className = 'tier-btn text-left p-3 rounded-2xl border-2 border-amber-400 bg-amber-50/50 transition';
+            }
+            calculatePlanCosts();
+        }
+
+        function calculatePlanCosts() {
+            if (!currentPlannerResort) return;
+
+            const r = currentPlannerResort;
+            const driveHrs = parseFloat(r['Drive Time']) || 1.0;
+            const skiersCount = parseInt(document.getElementById('plan-skiers').value) || 3;
+            const nights = plannerMode === 'multi' ? parseInt(document.getElementById('plan-nights').value) : 0;
+
+            // Approximate one-way driving miles based on highway speeds (~58 mph average)
+            const oneWayMiles = Math.round(driveHrs * 58);
+            const roundTripMiles = oneWayMiles * 2;
+            const totalDriveTimeRT = (driveHrs * 2).toFixed(1);
+
+            document.getElementById('plan-miles').innerText = `${roundTripMiles} mi`;
+            document.getElementById('plan-duration').innerText = `${totalDriveTimeRT} hrs RT`;
+
+            const isFlyOut = driveHrs > 7.0;
+            const driveBox = document.getElementById('plan-drive-box');
+            const flightBox = document.getElementById('plan-flight-box');
+            const travelTag = document.getElementById('plan-travel-tag');
+
+            let transportationCost = 0;
+
+            if (!isFlyOut) {
+                // Driving & Gas Cost Calculation
+                travelTag.innerText = '🚗 Road Trip';
+                driveBox.classList.remove('hidden');
+                flightBox.classList.add('hidden');
+
+                const gallonsNeeded = roundTripMiles / VEHICLE_MPG;
+                const gasCost = Math.round(gallonsNeeded * CURRENT_GAS_PRICE);
+                transportationCost = gasCost;
+                document.getElementById('plan-fuel').innerText = `$${gasCost}`;
+            } else {
+                // Fly-out Long Haul Calculation
+                travelTag.innerText = '✈️ Fly Out (BDL)';
+                driveBox.classList.add('hidden');
+                flightBox.classList.remove('hidden');
+
+                // Average winter round-trip fare from BDL to West/Rockies is ~$280/person
+                const flightPerPerson = (r.Region === 'Canada') ? 340 : 280;
+                const totalAirfare = flightPerPerson * skiersCount;
+                const rentalCarCost = (nights + 1) * 75; // SUV rental ~$75/day
+                transportationCost = totalAirfare + rentalCarCost;
+
+                document.getElementById('plan-flight-price').innerText = `~$${flightPerPerson} RT / person`;
+                document.getElementById('btn-google-flights').href = `https://www.google.com/travel/flights?q=Flights%20to%20${encodeURIComponent(r.Resort)}%20from%20BDL`;
+            }
+
+            // Lodging Cost
+            let lodgingCost = 0;
+            if (plannerMode === 'multi') {
+                const rates = { value: 110, mid: 210, luxury: 540 };
+                const roomRate = rates[selectedLodgingTier] || 210;
+                lodgingCost = roomRate * nights;
+
+                // Configure Google Hotel deep link
+                const hotelUrl = `https://www.google.com/travel/hotels?q=Hotels%20near%20${encodeURIComponent(r.Resort + ' ' + r.State)}`;
+                document.getElementById('btn-hotel-search').href = hotelUrl;
+            }
+
+            const totalEstimate = transportationCost + lodgingCost;
+            const perPerson = Math.round(totalEstimate / skiersCount);
+
+            document.getElementById('plan-total-cost').innerText = `$${totalEstimate.toLocaleString()}`;
+            document.getElementById('plan-per-person').innerText = `($${perPerson.toLocaleString()} / skier)`;
+
+            // Navigation URL
+            const navUrl = `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(BASE_ADDRESS)}&destination=${encodeURIComponent(r.Resort + ' Ski Resort, ' + r.State)}`;
+            document.getElementById('btn-directions').href = navUrl;
         }
 
         init();
