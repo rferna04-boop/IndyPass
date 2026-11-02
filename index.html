@@ -23,7 +23,7 @@
                         🎿 Indy Pass 2026
                         <span class="text-xs px-2.5 py-1 rounded-full bg-blue-500/20 text-blue-400 border border-blue-500/30">Unionville Base</span>
                     </h1>
-                    <p class="text-slate-400 text-sm mt-1">Multi-Skier Consultant: Ricardo &bull; Lilli &bull; Alex</p>
+                    <p class="text-slate-400 text-sm mt-1">Multi-Skier Consultant & Global Directory</p>
                 </div>
                 
                 <!-- Skier Tabs -->
@@ -39,19 +39,19 @@
             <div class="grid grid-cols-2 md:grid-cols-4 gap-3 pt-2">
                 <div class="bg-slate-950/50 border border-slate-800/80 p-3 rounded-xl">
                     <div class="text-[11px] text-slate-400 uppercase font-semibold">Total Group Days</div>
-                    <div class="text-xl font-bold text-blue-400 mt-0.5"><span id="stat-group-total">0</span> <span class="text-xs text-slate-500 font-normal">/ 108</span></div>
+                    <div class="text-xl font-bold text-blue-400 mt-0.5"><span id="stat-group-total">0</span> <span class="text-xs text-slate-500 font-normal">/ 322</span></div>
                 </div>
                 <div class="bg-slate-950/50 border border-slate-800/80 p-3 rounded-xl">
                     <div class="text-[11px] text-slate-400 uppercase font-semibold">Ricardo</div>
-                    <div class="text-xl font-bold text-cyan-400 mt-0.5"><span id="stat-ricardo">0</span> <span class="text-xs text-slate-500 font-normal">/ 36</span></div>
+                    <div class="text-xl font-bold text-cyan-400 mt-0.5"><span id="stat-ricardo">0</span> <span class="text-xs text-slate-500 font-normal">days</span></div>
                 </div>
                 <div class="bg-slate-950/50 border border-slate-800/80 p-3 rounded-xl">
                     <div class="text-[11px] text-slate-400 uppercase font-semibold">Lilli</div>
-                    <div class="text-xl font-bold text-violet-400 mt-0.5"><span id="stat-lilli">0</span> <span class="text-xs text-slate-500 font-normal">/ 36</span></div>
+                    <div class="text-xl font-bold text-violet-400 mt-0.5"><span id="stat-lilli">0</span> <span class="text-xs text-slate-500 font-normal">days</span></div>
                 </div>
                 <div class="bg-slate-950/50 border border-slate-800/80 p-3 rounded-xl">
                     <div class="text-[11px] text-slate-400 uppercase font-semibold">Alex</div>
-                    <div class="text-xl font-bold text-amber-400 mt-0.5"><span id="stat-alex">0</span> <span class="text-xs text-slate-500 font-normal">/ 36</span></div>
+                    <div class="text-xl font-bold text-amber-400 mt-0.5"><span id="stat-alex">0</span> <span class="text-xs text-slate-500 font-normal">days</span></div>
                 </div>
             </div>
 
@@ -67,325 +67,43 @@
             </div>
         </header>
 
-        <!-- Controls: Filters & Sort -->
-        <div class="flex flex-col md:flex-row justify-between items-stretch md:items-center gap-3">
-            <div class="flex flex-wrap gap-2 text-xs font-semibold">
-                <button onclick="setFilter('all')" id="filter-all" class="filter-btn px-3.5 py-2 rounded-xl bg-blue-600 text-white transition">All Mountains</button>
-                <button onclick="setFilter('powder')" id="filter-powder" class="filter-btn px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-white transition">❄️ Powder Alert</button>
-                <button onclick="setFilter('daytrip')" id="filter-daytrip" class="filter-btn px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-white transition">⚡ Quick Hits (&lt; 2 hrs)</button>
-                <button onclick="setFilter('weekender')" id="filter-weekender" class="filter-btn px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-white transition">🏔️ Weekenders (3+ hrs)</button>
-                <button onclick="setFilter('available')" id="filter-available" class="filter-btn px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-white transition">Tickets Left</button>
+        <!-- Geographic Regions Navigation -->
+        <div class="space-y-3">
+            <div class="flex items-center justify-between text-xs font-semibold text-slate-400 px-1">
+                <span>GEOGRAPHIC REGION</span>
+                <span id="resort-count-badge" class="text-slate-500">Showing 0 mountains</span>
             </div>
-
-            <div class="flex gap-2">
-                <button onclick="setSort('Drive Time')" id="sort-drive" class="flex-1 md:flex-none px-3.5 py-2 text-xs font-medium rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:bg-slate-800 transition flex items-center justify-center gap-1.5">
-                    <span>🚗 Drive Time</span>
-                </button>
-                <button onclick="setSort('Vertical Drop')" id="sort-vert" class="flex-1 md:flex-none px-3.5 py-2 text-xs font-medium rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:bg-slate-800 transition flex items-center justify-center gap-1.5">
-                    <span>↓ Vertical</span>
-                </button>
+            <div class="flex flex-wrap gap-2 text-xs font-medium">
+                <button onclick="setRegion('all')" id="region-all" class="region-btn px-4 py-2 rounded-xl bg-blue-600 text-white font-semibold shadow-md shadow-blue-600/30 transition">All Regions (161)</button>
+                <button onclick="setRegion('Northeast')" id="region-Northeast" class="region-btn px-4 py-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-white transition">Northeast (40)</button>
+                <button onclick="setRegion('Mid-Atlantic')" id="region-Mid-Atlantic" class="region-btn px-4 py-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-white transition">Mid-Atlantic (18)</button>
+                <button onclick="setRegion('Midwest')" id="region-Midwest" class="region-btn px-4 py-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-white transition">Midwest (48)</button>
+                <button onclick="setRegion('West & Rockies')" id="region-West & Rockies" class="region-btn px-4 py-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-white transition">West &amp; Rockies (44)</button>
+                <button onclick="setRegion('Canada')" id="region-Canada" class="region-btn px-4 py-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-white transition">Canada (11)</button>
             </div>
         </div>
 
-        <!-- Mountain Cards Grid -->
-        <div id="loading" class="text-center py-16 text-slate-400 animate-pulse">Syncing skier profiles & mountain forecasts...</div>
-        <div id="resort-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+        <!-- Search, Trip Type & Sorting Controls -->
+        <div class="flex flex-col lg:flex-row justify-between items-stretch lg:items-center gap-3 bg-slate-900/60 p-4 rounded-2xl border border-slate-800/80">
+            <!-- Search Input -->
+            <div class="relative flex-1">
+                <input type="text" id="search-input" oninput="handleSearch()" placeholder="Search mountain or state (e.g., Jay Peak, VT, CO)..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 transition">
+            </div>
 
-    </div>
+            <!-- Trip Type Filters -->
+            <div class="flex flex-wrap gap-1.5 text-xs font-semibold">
+                <button onclick="setFilter('all')" id="filter-all" class="filter-btn px-3 py-1.5 rounded-lg bg-blue-600 text-white transition">All Trips</button>
+                <button onclick="setFilter('daytrip')" id="filter-daytrip" class="filter-btn px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-800 text-slate-400 hover:text-white transition">⚡ &lt; 2 hrs</button>
+                <button onclick="setFilter('weekender')" id="filter-weekender" class="filter-btn px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-800 text-slate-400 hover:text-white transition">🏔️ 2-5 hrs</button>
+                <button onclick="setFilter('flight')" id="filter-flight" class="filter-btn px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-800 text-slate-400 hover:text-white transition">✈️ Fly-Out / Long Haul</button>
+                <button onclick="setFilter('available')" id="filter-available" class="filter-btn px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-800 text-slate-400 hover:text-white transition">Tickets Left</button>
+            </div>
 
-    <script>
-        const API_URL = 'https://script.google.com/macros/s/AKfycbzGsR7rsHCVbj16HS9Qi2OgK583MhXyRozzOBaZ24Bf0ujdo-xo_3ZdfMOpn5GRqELz3g/exec';
-        const BASE_ADDRESS = '538 Plainville Ave, Unionville, CT';
-
-        const SKIERS = [
-            { id: 'Ricardo', key: 'Ricardo Days', label: 'Ricardo', color: 'cyan' },
-            { id: 'Lilli', key: 'Lilli Days', label: 'Lilli', color: 'violet' },
-            { id: 'Alex', key: 'Alex Days', label: 'Alex', color: 'amber' }
-        ];
-
-        const RESORT_COORDS = {
-            "Powder Ridge": { lat: 41.5037, lon: -72.7487 },
-            "Mohawk Mountain": { lat: 41.8348, lon: -73.3001 },
-            "Bousquet Mountain": { lat: 42.4173, lon: -73.2793 },
-            "Catamount": { lat: 42.1768, lon: -73.4754 },
-            "Berkshire East": { lat: 42.6176, lon: -72.8837 },
-            "Magic Mountain": { lat: 43.2012, lon: -72.7726 },
-            "Pats Peak": { lat: 43.1629, lon: -71.7981 },
-            "Saskadena Six": { lat: 43.6662, lon: -72.5398 },
-            "Ragged Mountain": { lat: 43.4842, lon: -71.9865 },
-            "Tenney Mountain": { lat: 43.7431, lon: -71.7765 },
-            "Middlebury Snowbowl": { lat: 43.9387, lon: -72.9587 },
-            "Waterville Valley": { lat: 43.9576, lon: -71.5234 },
-            "Cannon Mountain": { lat: 44.1565, lon: -71.6987 },
-            "Bolton Valley": { lat: 44.4192, lon: -72.8495 },
-            "Burke Mountain": { lat: 44.5714, lon: -71.8926 },
-            "Smugglers' Notch": { lat: 44.5539, lon: -72.7933 },
-            "Jay Peak": { lat: 44.9372, lon: -72.5056 },
-            "Saddleback Mountain": { lat: 44.9367, lon: -70.5053 }
-        };
-
-        let rawResorts = [];
-        let weatherCache = {};
-        let activeFilter = 'all';
-        let activeSort = 'Drive Time';
-        let activeSkier = 'all'; // 'all', 'Ricardo', 'Lilli', 'Alex'
-
-        async function init() {
-            try {
-                const res = await fetch(API_URL);
-                const data = await res.json();
-                rawResorts = data.resorts.filter(r => r.Resort && r.Resort.trim() !== '');
-                document.getElementById('loading').classList.add('hidden');
-                updateDashboard();
-                fetchWeatherForecasts();
-            } catch (err) {
-                console.error(err);
-                document.getElementById('loading').innerHTML = '<span class="text-red-400">Failed to load data. Ensure Google Apps Script is accessible.</span>';
-            }
-        }
-
-        async function fetchWeatherForecasts() {
-            for (const r of rawResorts) {
-                const coords = RESORT_COORDS[r.Resort];
-                if (!coords) continue;
-                try {
-                    const url = `https://api.open-meteo.com/v1/forecast?latitude=${coords.lat}&longitude=${coords.lon}&daily=snowfall_sum,temperature_2m_max,windspeed_10m_max&temperature_unit=fahrenheit&windspeed_unit=mph&precipitation_unit=inch&timezone=America%2FNew_York`;
-                    const res = await fetch(url);
-                    const wData = await res.json();
-                    if (wData && wData.daily) {
-                        weatherCache[r.Resort] = {
-                            snowfall: wData.daily.snowfall_sum ? wData.daily.snowfall_sum[0] : 0,
-                            tempMax: Math.round(wData.daily.temperature_2m_max[0]),
-                            wind: Math.round(wData.daily.windspeed_10m_max[0])
-                        };
-                        updateCardWeather(r.Resort, weatherCache[r.Resort]);
-                    }
-                } catch (e) {
-                    console.warn(`Weather fetch failed for ${r.Resort}`);
-                }
-            }
-        }
-
-        function updateCardWeather(resortName, w) {
-            const badge = document.getElementById(`weather-${resortName.replace(/[^a-zA-Z0-9]/g, '')}`);
-            if (!badge) return;
-            badge.innerHTML = `
-                <div class="flex items-center gap-2 text-slate-300 font-mono">
-                    <span>🌡️ ${w.tempMax}°F</span>
-                    <span>💨 ${w.wind}mph</span>
-                    ${w.snowfall > 0.5 ? `<span class="text-cyan-300 font-bold">❄️ ${w.snowfall}"</span>` : ''}
-                </div>
-            `;
-            badge.classList.remove('hidden');
-
-            if (w.snowfall >= 2.0) {
-                const powBadge = document.getElementById(`powder-badge-${resortName.replace(/[^a-zA-Z0-9]/g, '')}`);
-                if (powBadge) powBadge.classList.remove('hidden');
-            }
-        }
-
-        async function modifyDays(resortName, userKey, delta) {
-            const r = rawResorts.find(item => item.Resort === resortName);
-            if (!r) return;
-
-            const current = parseInt(r[userKey]) || 0;
-            const updated = Math.max(0, Math.min(2, current + delta));
-            if (current === updated) return;
-
-            r[userKey] = updated;
-            updateDashboard();
-
-            try {
-                await fetch(API_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'text/plain' },
-                    body: JSON.stringify({ resort: resortName, userKey: userKey, delta: delta })
-                });
-            } catch (err) {
-                console.error("Save failed:", err);
-            }
-        }
-
-        function setActiveSkier(skier) {
-            activeSkier = skier;
-            document.querySelectorAll('.skier-tab').forEach(tab => {
-                tab.className = 'skier-tab px-3 py-1.5 rounded-lg text-slate-400 hover:text-white transition';
-            });
-            const activeTab = document.getElementById(`skier-tab-${skier}`);
-            if (activeTab) {
-                activeTab.className = 'skier-tab px-3 py-1.5 rounded-lg bg-blue-600 text-white font-semibold transition';
-            }
-            updateDashboard();
-        }
-
-        function updateDashboard() {
-            // Skier totals
-            const rUsed = rawResorts.reduce((sum, r) => sum + (parseInt(r['Ricardo Days']) || 0), 0);
-            const lUsed = rawResorts.reduce((sum, r) => sum + (parseInt(r['Lilli Days']) || 0), 0);
-            const aUsed = rawResorts.reduce((sum, r) => sum + (parseInt(r['Alex Days']) || 0), 0);
-            const groupTotal = rUsed + lUsed + aUsed;
-
-            document.getElementById('stat-ricardo').innerText = rUsed;
-            document.getElementById('stat-lilli').innerText = lUsed;
-            document.getElementById('stat-alex').innerText = aUsed;
-            document.getElementById('stat-group-total').innerText = groupTotal;
-
-            // Update Progress Bar based on active view
-            let targetUsed = groupTotal;
-            let targetMax = 108;
-            let label = "Group Season Utilization";
-
-            if (activeSkier === 'Ricardo') { targetUsed = rUsed; targetMax = 36; label = "Ricardo's Pass Utilization"; }
-            else if (activeSkier === 'Lilli') { targetUsed = lUsed; targetMax = 36; label = "Lilli's Pass Utilization"; }
-            else if (activeSkier === 'Alex') { targetUsed = aUsed; targetMax = 36; label = "Alex's Pass Utilization"; }
-
-            const pct = Math.min(100, Math.round((targetUsed / targetMax) * 100));
-            document.getElementById('progress-label').innerText = label;
-            document.getElementById('stat-pct').innerText = `${pct}% (${targetUsed}/${targetMax})`;
-            document.getElementById('stat-progress-bar').style.width = `${pct}%`;
-
-            // Filter
-            let list = rawResorts.filter(r => {
-                const drive = parseFloat(r['Drive Time']) || 0;
-                const snow = weatherCache[r.Resort]?.snowfall || 0;
-
-                if (activeFilter === 'powder') return snow >= 1.0;
-                if (activeFilter === 'daytrip') return drive <= 2.0;
-                if (activeFilter === 'weekender') return drive >= 3.0;
-                if (activeFilter === 'available') {
-                    if (activeSkier === 'all') {
-                        return (parseInt(r['Ricardo Days']) || 0) < 2 || (parseInt(r['Lilli Days']) || 0) < 2 || (parseInt(r['Alex Days']) || 0) < 2;
-                    } else {
-                        return (parseInt(r[`${activeSkier} Days`]) || 0) < 2;
-                    }
-                }
-                return true;
-            });
-
-            // Sort
-            list.sort((a, b) => {
-                const valA = parseFloat(String(a[activeSort]).replace(/[^0-9.]/g, '')) || 0;
-                const valB = parseFloat(String(b[activeSort]).replace(/[^0-9.]/g, '')) || 0;
-                return activeSort === 'Vertical Drop' ? valB - valA : valA - valB;
-            });
-
-            // If a specific skier is active, push their maxed resorts to bottom
-            if (activeSkier !== 'all') {
-                list.sort((a, b) => {
-                    const maxA = (parseInt(a[`${activeSkier} Days`]) >= 2) ? 1 : 0;
-                    const maxB = (parseInt(b[`${activeSkier} Days`]) >= 2) ? 1 : 0;
-                    return maxA - maxB;
-                });
-            }
-
-            renderGrid(list);
-        }
-
-        function renderGrid(resorts) {
-            const grid = document.getElementById('resort-grid');
-            grid.innerHTML = '';
-
-            if (resorts.length === 0) {
-                grid.innerHTML = '<div class="col-span-full text-center py-12 text-slate-500">No mountains match the current filter.</div>';
-                return;
-            }
-
-            resorts.forEach(r => {
-                const safeId = r.Resort.replace(/[^a-zA-Z0-9]/g, '');
-                const navUrl = `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(BASE_ADDRESS)}&destination=${encodeURIComponent(r.Resort + ' Ski Resort, ' + r.State)}`;
-                const trailMapUrl = `https://www.google.com/search?q=${encodeURIComponent(r.Resort + ' ' + r.State + ' ski trail map')}&btnI=1`;
-
-                const rDays = parseInt(r['Ricardo Days']) || 0;
-                const lDays = parseInt(r['Lilli Days']) || 0;
-                const aDays = parseInt(r['Alex Days']) || 0;
-
-                const isAllMaxed = rDays >= 2 && lDays >= 2 && aDays >= 2;
-                const isSelectedMaxed = activeSkier !== 'all' && (parseInt(r[`${activeSkier} Days`]) >= 2);
-
-                const card = document.createElement('div');
-                card.className = `group bg-slate-900 border rounded-2xl p-5 flex flex-col justify-between transition-all duration-200 ${(isAllMaxed || isSelectedMaxed) ? 'border-red-950/40 bg-slate-950/40 opacity-60' : 'border-slate-800 hover:border-slate-700 hover:shadow-lg'}`;
-
-                card.innerHTML = `
-                    <div>
-                        <div class="flex justify-between items-start gap-2">
-                            <div>
-                                <div class="flex items-center gap-2">
-                                    <h3 class="font-bold text-lg text-white group-hover:text-blue-400 transition-colors">${r.Resort}</h3>
-                                    <span class="text-xs px-2 py-0.5 rounded-md bg-slate-800 text-slate-300 font-mono font-semibold">${r.State}</span>
-                                    <span id="powder-badge-${safeId}" class="hidden text-[10px] px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 font-bold">POWDER</span>
-                                </div>
-                                <div class="flex items-center gap-3 mt-2 text-xs font-medium text-slate-400">
-                                    <span class="flex items-center gap-1">↓ <strong class="text-slate-200">${Number(r['Vertical Drop']).toLocaleString()}</strong> ft</span>
-                                    <span>&bull;</span>
-                                    <span class="flex items-center gap-1">🚗 <strong class="text-slate-200">${r['Drive Time']}</strong> hrs</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Skier Pass Steppers -->
-                        <div class="mt-4 pt-3 border-t border-slate-800/60 space-y-2">
-                            ${SKIERS.map(s => {
-                                const days = parseInt(r[s.key]) || 0;
-                                const isDimmed = activeSkier !== 'all' && activeSkier !== s.id;
-                                return `
-                                    <div class="flex items-center justify-between text-xs py-1 px-2 rounded-lg ${isDimmed ? 'opacity-40' : 'bg-slate-950/40'}">
-                                        <span class="font-medium text-slate-300 w-16">${s.label}</span>
-                                        <div class="flex items-center gap-2">
-                                            <div class="flex gap-1 p-0.5 bg-slate-950 rounded border border-slate-800">
-                                                <div class="w-3 h-3 rounded-sm ${days >= 1 ? 'bg-blue-500' : 'bg-slate-800'}"></div>
-                                                <div class="w-3 h-3 rounded-sm ${days >= 2 ? 'bg-blue-500' : 'bg-slate-800'}"></div>
-                                            </div>
-                                            <div class="flex items-center gap-1">
-                                                <button onclick="modifyDays('${r.Resort.replace(/'/g, "\\'")}', '${s.key}', 1)" class="w-5 h-5 flex items-center justify-center bg-slate-800 hover:bg-blue-600 rounded text-white text-[11px] font-bold transition">+</button>
-                                                <button onclick="modifyDays('${r.Resort.replace(/'/g, "\\'")}', '${s.key}', -1)" class="w-5 h-5 flex items-center justify-center bg-slate-800 hover:bg-slate-700 rounded text-slate-400 text-[11px] font-bold transition">-</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                `;
-                            }).join('')}
-                        </div>
-
-                        <!-- Weather Widget -->
-                        <div id="weather-${safeId}" class="hidden mt-3 pt-2 border-t border-slate-800/40 text-xs"></div>
-                    </div>
-
-                    <!-- Action Bar -->
-                    <div class="mt-5 pt-4 border-t border-slate-800/60 flex items-center justify-between text-xs">
-                        <a href="${navUrl}" target="_blank" rel="noopener" class="text-blue-400 hover:text-blue-300 font-semibold flex items-center gap-1 transition">
-                            Directions ↗
-                        </a>
-                        <a href="${trailMapUrl}" target="_blank" rel="noopener" class="text-slate-400 hover:text-slate-200 transition">
-                            Trail Map ↗
-                        </a>
-                    </div>
-                `;
-
-                grid.appendChild(card);
-
-                if (weatherCache[r.Resort]) {
-                    updateCardWeather(r.Resort, weatherCache[r.Resort]);
-                }
-            });
-        }
-
-        function setFilter(type) {
-            activeFilter = type;
-            document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.className = 'filter-btn px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-white transition';
-            });
-            const activeBtn = document.getElementById(`filter-${type}`);
-            if (activeBtn) {
-                activeBtn.className = 'filter-btn px-3.5 py-2 rounded-xl bg-blue-600 text-white font-semibold shadow-md shadow-blue-600/30 transition';
-            }
-            updateDashboard();
-        }
-
-        function setSort(type) {
-            activeSort = type;
-            updateDashboard();
-        }
-
-        init();
-    </script>
-</body>
-</html>
+            <!-- Sorting Buttons -->
+            <div class="flex gap-1.5 text-xs">
+                <button onclick="setSort('Drive Time')" id="sort-drive" class="px-3 py-1.5 font-medium rounded-lg bg-slate-950 border border-slate-800 text-slate-300 hover:bg-slate-800 transition">
+                    🚗 Travel Time
+                </button>
+                <button onclick="setSort('Vertical Drop')" id="sort-vert" class="px-3 py-1.5 font-medium rounded-lg bg-slate-950 border border-slate-800 text-slate-300 hover:bg-slate-800 transition">
+                    ↓ Vertical
+                </
