@@ -15,40 +15,60 @@
 
     <div class="max-w-6xl mx-auto space-y-6">
         
-        <!-- Header & Pass Progress Bar -->
-        <header class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl">
+        <!-- Header & Skier Selectors -->
+        <header class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl space-y-5">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
                     <h1 class="text-3xl font-extrabold tracking-tight text-white flex items-center gap-3">
                         🎿 Indy Pass 2026
                         <span class="text-xs px-2.5 py-1 rounded-full bg-blue-500/20 text-blue-400 border border-blue-500/30">Unionville Base</span>
                     </h1>
-                    <p class="text-slate-400 text-sm mt-1">Season Consultant, Weather & Mountain Directory</p>
+                    <p class="text-slate-400 text-sm mt-1">Multi-Skier Consultant: Ricardo &bull; Lilli &bull; Alex</p>
                 </div>
                 
-                <div class="flex items-center gap-4 bg-slate-950/60 border border-slate-800/80 px-4 py-3 rounded-xl">
-                    <div class="text-right">
-                        <div class="text-xs text-slate-400 uppercase tracking-wider font-semibold">Pass Days Used</div>
-                        <div class="text-2xl font-black text-blue-400"><span id="stat-used">0</span> <span class="text-xs text-slate-500 font-normal">/ 36 potential</span></div>
-                    </div>
+                <!-- Skier Tabs -->
+                <div class="flex bg-slate-950/80 p-1.5 rounded-xl border border-slate-800 text-xs font-semibold gap-1">
+                    <button onclick="setActiveSkier('all')" id="skier-tab-all" class="skier-tab px-3 py-1.5 rounded-lg bg-blue-600 text-white transition">Group View</button>
+                    <button onclick="setActiveSkier('Ricardo')" id="skier-tab-Ricardo" class="skier-tab px-3 py-1.5 rounded-lg text-slate-400 hover:text-white transition">Ricardo</button>
+                    <button onclick="setActiveSkier('Lilli')" id="skier-tab-Lilli" class="skier-tab px-3 py-1.5 rounded-lg text-slate-400 hover:text-white transition">Lilli</button>
+                    <button onclick="setActiveSkier('Alex')" id="skier-tab-Alex" class="skier-tab px-3 py-1.5 rounded-lg text-slate-400 hover:text-white transition">Alex</button>
                 </div>
             </div>
 
-            <!-- Visual Progress Bar -->
-            <div class="mt-4 pt-4 border-t border-slate-800/60">
+            <!-- Stats Bar -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 pt-2">
+                <div class="bg-slate-950/50 border border-slate-800/80 p-3 rounded-xl">
+                    <div class="text-[11px] text-slate-400 uppercase font-semibold">Total Group Days</div>
+                    <div class="text-xl font-bold text-blue-400 mt-0.5"><span id="stat-group-total">0</span> <span class="text-xs text-slate-500 font-normal">/ 108</span></div>
+                </div>
+                <div class="bg-slate-950/50 border border-slate-800/80 p-3 rounded-xl">
+                    <div class="text-[11px] text-slate-400 uppercase font-semibold">Ricardo</div>
+                    <div class="text-xl font-bold text-cyan-400 mt-0.5"><span id="stat-ricardo">0</span> <span class="text-xs text-slate-500 font-normal">/ 36</span></div>
+                </div>
+                <div class="bg-slate-950/50 border border-slate-800/80 p-3 rounded-xl">
+                    <div class="text-[11px] text-slate-400 uppercase font-semibold">Lilli</div>
+                    <div class="text-xl font-bold text-violet-400 mt-0.5"><span id="stat-lilli">0</span> <span class="text-xs text-slate-500 font-normal">/ 36</span></div>
+                </div>
+                <div class="bg-slate-950/50 border border-slate-800/80 p-3 rounded-xl">
+                    <div class="text-[11px] text-slate-400 uppercase font-semibold">Alex</div>
+                    <div class="text-xl font-bold text-amber-400 mt-0.5"><span id="stat-alex">0</span> <span class="text-xs text-slate-500 font-normal">/ 36</span></div>
+                </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="pt-2 border-t border-slate-800/60">
                 <div class="flex justify-between text-xs text-slate-400 mb-1.5">
-                    <span>Season Utilization</span>
+                    <span id="progress-label">Group Season Utilization</span>
                     <span id="stat-pct">0%</span>
                 </div>
                 <div class="w-full bg-slate-800 h-2.5 rounded-full overflow-hidden">
-                    <div id="stat-progress-bar" class="bg-gradient-to-r from-blue-500 to-indigo-500 h-full w-0 transition-all duration-500"></div>
+                    <div id="stat-progress-bar" class="bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 h-full w-0 transition-all duration-500"></div>
                 </div>
             </div>
         </header>
 
         <!-- Controls: Filters & Sort -->
         <div class="flex flex-col md:flex-row justify-between items-stretch md:items-center gap-3">
-            <!-- Filter Pills -->
             <div class="flex flex-wrap gap-2 text-xs font-semibold">
                 <button onclick="setFilter('all')" id="filter-all" class="filter-btn px-3.5 py-2 rounded-xl bg-blue-600 text-white transition">All Mountains</button>
                 <button onclick="setFilter('powder')" id="filter-powder" class="filter-btn px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-white transition">❄️ Powder Alert</button>
@@ -57,7 +77,6 @@
                 <button onclick="setFilter('available')" id="filter-available" class="filter-btn px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-white transition">Tickets Left</button>
             </div>
 
-            <!-- Sorting Buttons -->
             <div class="flex gap-2">
                 <button onclick="setSort('Drive Time')" id="sort-drive" class="flex-1 md:flex-none px-3.5 py-2 text-xs font-medium rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:bg-slate-800 transition flex items-center justify-center gap-1.5">
                     <span>🚗 Drive Time</span>
@@ -68,8 +87,8 @@
             </div>
         </div>
 
-        <!-- Mountain Cards Container -->
-        <div id="loading" class="text-center py-16 text-slate-400 animate-pulse">Syncing Indy Pass directory & mountain forecasts...</div>
+        <!-- Mountain Cards Grid -->
+        <div id="loading" class="text-center py-16 text-slate-400 animate-pulse">Syncing skier profiles & mountain forecasts...</div>
         <div id="resort-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
 
     </div>
@@ -78,7 +97,12 @@
         const API_URL = 'https://script.google.com/macros/s/AKfycbzGsR7rsHCVbj16HS9Qi2OgK583MhXyRozzOBaZ24Bf0ujdo-xo_3ZdfMOpn5GRqELz3g/exec';
         const BASE_ADDRESS = '538 Plainville Ave, Unionville, CT';
 
-        // Approximate coordinates for Open-Meteo alpine weather
+        const SKIERS = [
+            { id: 'Ricardo', key: 'Ricardo Days', label: 'Ricardo', color: 'cyan' },
+            { id: 'Lilli', key: 'Lilli Days', label: 'Lilli', color: 'violet' },
+            { id: 'Alex', key: 'Alex Days', label: 'Alex', color: 'amber' }
+        ];
+
         const RESORT_COORDS = {
             "Powder Ridge": { lat: 41.5037, lon: -72.7487 },
             "Mohawk Mountain": { lat: 41.8348, lon: -73.3001 },
@@ -104,6 +128,7 @@
         let weatherCache = {};
         let activeFilter = 'all';
         let activeSort = 'Drive Time';
+        let activeSkier = 'all'; // 'all', 'Ricardo', 'Lilli', 'Alex'
 
         async function init() {
             try {
@@ -112,8 +137,6 @@
                 rawResorts = data.resorts.filter(r => r.Resort && r.Resort.trim() !== '');
                 document.getElementById('loading').classList.add('hidden');
                 updateDashboard();
-
-                // Silently fetch weather in parallel
                 fetchWeatherForecasts();
             } catch (err) {
                 console.error(err);
@@ -125,24 +148,16 @@
             for (const r of rawResorts) {
                 const coords = RESORT_COORDS[r.Resort];
                 if (!coords) continue;
-
                 try {
-                    const url = `https://api.open-meteo.com/v1/forecast?latitude=${coords.lat}&longitude=${coords.lon}&daily=snowfall_sum,temperature_2m_max,temperature_2m_min,windspeed_10m_max&temperature_unit=fahrenheit&windspeed_unit=mph&precipitation_unit=inch&timezone=America%2FNew_York`;
+                    const url = `https://api.open-meteo.com/v1/forecast?latitude=${coords.lat}&longitude=${coords.lon}&daily=snowfall_sum,temperature_2m_max,windspeed_10m_max&temperature_unit=fahrenheit&windspeed_unit=mph&precipitation_unit=inch&timezone=America%2FNew_York`;
                     const res = await fetch(url);
                     const wData = await res.json();
-                    
                     if (wData && wData.daily) {
-                        const snow24 = wData.daily.snowfall_sum ? wData.daily.snowfall_sum[0] : 0;
-                        const tempMax = Math.round(wData.daily.temperature_2m_max[0]);
-                        const windMax = Math.round(wData.daily.windspeed_10m_max[0]);
-
                         weatherCache[r.Resort] = {
-                            snowfall: snow24,
-                            tempMax: tempMax,
-                            wind: windMax
+                            snowfall: wData.daily.snowfall_sum ? wData.daily.snowfall_sum[0] : 0,
+                            tempMax: Math.round(wData.daily.temperature_2m_max[0]),
+                            wind: Math.round(wData.daily.windspeed_10m_max[0])
                         };
-
-                        // Update the card live if rendered
                         updateCardWeather(r.Resort, weatherCache[r.Resort]);
                     }
                 } catch (e) {
@@ -154,7 +169,6 @@
         function updateCardWeather(resortName, w) {
             const badge = document.getElementById(`weather-${resortName.replace(/[^a-zA-Z0-9]/g, '')}`);
             if (!badge) return;
-
             badge.innerHTML = `
                 <div class="flex items-center gap-2 text-slate-300 font-mono">
                     <span>🌡️ ${w.tempMax}°F</span>
@@ -170,61 +184,99 @@
             }
         }
 
-        async function modifyDays(resortName, delta) {
+        async function modifyDays(resortName, userKey, delta) {
             const r = rawResorts.find(item => item.Resort === resortName);
             if (!r) return;
 
-            const current = parseInt(r['Days Used']) || 0;
+            const current = parseInt(r[userKey]) || 0;
             const updated = Math.max(0, Math.min(2, current + delta));
             if (current === updated) return;
 
-            // Optimistic UI update
-            r['Days Used'] = updated;
+            r[userKey] = updated;
             updateDashboard();
 
-            // Background POST to Apps Script
             try {
                 await fetch(API_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'text/plain' },
-                    body: JSON.stringify({ resort: resortName, delta: delta })
+                    body: JSON.stringify({ resort: resortName, userKey: userKey, delta: delta })
                 });
             } catch (err) {
                 console.error("Save failed:", err);
             }
         }
 
+        function setActiveSkier(skier) {
+            activeSkier = skier;
+            document.querySelectorAll('.skier-tab').forEach(tab => {
+                tab.className = 'skier-tab px-3 py-1.5 rounded-lg text-slate-400 hover:text-white transition';
+            });
+            const activeTab = document.getElementById(`skier-tab-${skier}`);
+            if (activeTab) {
+                activeTab.className = 'skier-tab px-3 py-1.5 rounded-lg bg-blue-600 text-white font-semibold transition';
+            }
+            updateDashboard();
+        }
+
         function updateDashboard() {
-            const totalUsed = rawResorts.reduce((sum, r) => sum + (parseInt(r['Days Used']) || 0), 0);
-            document.getElementById('stat-used').innerText = totalUsed;
-            const pct = Math.min(100, Math.round((totalUsed / 36) * 100));
-            document.getElementById('stat-pct').innerText = `${pct}%`;
+            // Skier totals
+            const rUsed = rawResorts.reduce((sum, r) => sum + (parseInt(r['Ricardo Days']) || 0), 0);
+            const lUsed = rawResorts.reduce((sum, r) => sum + (parseInt(r['Lilli Days']) || 0), 0);
+            const aUsed = rawResorts.reduce((sum, r) => sum + (parseInt(r['Alex Days']) || 0), 0);
+            const groupTotal = rUsed + lUsed + aUsed;
+
+            document.getElementById('stat-ricardo').innerText = rUsed;
+            document.getElementById('stat-lilli').innerText = lUsed;
+            document.getElementById('stat-alex').innerText = aUsed;
+            document.getElementById('stat-group-total').innerText = groupTotal;
+
+            // Update Progress Bar based on active view
+            let targetUsed = groupTotal;
+            let targetMax = 108;
+            let label = "Group Season Utilization";
+
+            if (activeSkier === 'Ricardo') { targetUsed = rUsed; targetMax = 36; label = "Ricardo's Pass Utilization"; }
+            else if (activeSkier === 'Lilli') { targetUsed = lUsed; targetMax = 36; label = "Lilli's Pass Utilization"; }
+            else if (activeSkier === 'Alex') { targetUsed = aUsed; targetMax = 36; label = "Alex's Pass Utilization"; }
+
+            const pct = Math.min(100, Math.round((targetUsed / targetMax) * 100));
+            document.getElementById('progress-label').innerText = label;
+            document.getElementById('stat-pct').innerText = `${pct}% (${targetUsed}/${targetMax})`;
             document.getElementById('stat-progress-bar').style.width = `${pct}%`;
 
+            // Filter
             let list = rawResorts.filter(r => {
                 const drive = parseFloat(r['Drive Time']) || 0;
-                const days = parseInt(r['Days Used']) || 0;
                 const snow = weatherCache[r.Resort]?.snowfall || 0;
 
                 if (activeFilter === 'powder') return snow >= 1.0;
                 if (activeFilter === 'daytrip') return drive <= 2.0;
                 if (activeFilter === 'weekender') return drive >= 3.0;
-                if (activeFilter === 'available') return days < 2;
+                if (activeFilter === 'available') {
+                    if (activeSkier === 'all') {
+                        return (parseInt(r['Ricardo Days']) || 0) < 2 || (parseInt(r['Lilli Days']) || 0) < 2 || (parseInt(r['Alex Days']) || 0) < 2;
+                    } else {
+                        return (parseInt(r[`${activeSkier} Days`]) || 0) < 2;
+                    }
+                }
                 return true;
             });
 
+            // Sort
             list.sort((a, b) => {
                 const valA = parseFloat(String(a[activeSort]).replace(/[^0-9.]/g, '')) || 0;
                 const valB = parseFloat(String(b[activeSort]).replace(/[^0-9.]/g, '')) || 0;
                 return activeSort === 'Vertical Drop' ? valB - valA : valA - valB;
             });
 
-            // Deprioritize burned-out resorts
-            list.sort((a, b) => {
-                const maxA = (parseInt(a['Days Used']) >= 2) ? 1 : 0;
-                const maxB = (parseInt(b['Days Used']) >= 2) ? 1 : 0;
-                return maxA - maxB;
-            });
+            // If a specific skier is active, push their maxed resorts to bottom
+            if (activeSkier !== 'all') {
+                list.sort((a, b) => {
+                    const maxA = (parseInt(a[`${activeSkier} Days`]) >= 2) ? 1 : 0;
+                    const maxB = (parseInt(b[`${activeSkier} Days`]) >= 2) ? 1 : 0;
+                    return maxA - maxB;
+                });
+            }
 
             renderGrid(list);
         }
@@ -240,13 +292,18 @@
 
             resorts.forEach(r => {
                 const safeId = r.Resort.replace(/[^a-zA-Z0-9]/g, '');
-                const daysUsed = parseInt(r['Days Used']) || 0;
-                const isMaxed = daysUsed >= 2;
                 const navUrl = `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(BASE_ADDRESS)}&destination=${encodeURIComponent(r.Resort + ' Ski Resort, ' + r.State)}`;
                 const trailMapUrl = `https://www.google.com/search?q=${encodeURIComponent(r.Resort + ' ' + r.State + ' ski trail map')}&btnI=1`;
 
+                const rDays = parseInt(r['Ricardo Days']) || 0;
+                const lDays = parseInt(r['Lilli Days']) || 0;
+                const aDays = parseInt(r['Alex Days']) || 0;
+
+                const isAllMaxed = rDays >= 2 && lDays >= 2 && aDays >= 2;
+                const isSelectedMaxed = activeSkier !== 'all' && (parseInt(r[`${activeSkier} Days`]) >= 2);
+
                 const card = document.createElement('div');
-                card.className = `group bg-slate-900 border rounded-2xl p-5 flex flex-col justify-between transition-all duration-200 ${isMaxed ? 'border-red-950/40 bg-slate-950/40 opacity-50' : 'border-slate-800 hover:border-slate-700 hover:shadow-lg'}`;
+                card.className = `group bg-slate-900 border rounded-2xl p-5 flex flex-col justify-between transition-all duration-200 ${(isAllMaxed || isSelectedMaxed) ? 'border-red-950/40 bg-slate-950/40 opacity-60' : 'border-slate-800 hover:border-slate-700 hover:shadow-lg'}`;
 
                 card.innerHTML = `
                     <div>
@@ -263,21 +320,29 @@
                                     <span class="flex items-center gap-1">🚗 <strong class="text-slate-200">${r['Drive Time']}</strong> hrs</span>
                                 </div>
                             </div>
+                        </div>
 
-                            <!-- Pass Indicator & Quick Actions -->
-                            <div class="flex flex-col items-end">
-                                <span class="text-[10px] tracking-wider uppercase text-slate-500 font-semibold mb-1">Indy Days</span>
-                                <div class="flex items-center gap-2">
-                                    <div class="flex gap-1.5 p-1 bg-slate-950 rounded-lg border border-slate-800">
-                                        <div class="w-3.5 h-3.5 rounded-md ${daysUsed >= 1 ? 'bg-blue-500 shadow-sm shadow-blue-500/50' : 'bg-slate-800'}"></div>
-                                        <div class="w-3.5 h-3.5 rounded-md ${daysUsed >= 2 ? 'bg-blue-500 shadow-sm shadow-blue-500/50' : 'bg-slate-800'}"></div>
+                        <!-- Skier Pass Steppers -->
+                        <div class="mt-4 pt-3 border-t border-slate-800/60 space-y-2">
+                            ${SKIERS.map(s => {
+                                const days = parseInt(r[s.key]) || 0;
+                                const isDimmed = activeSkier !== 'all' && activeSkier !== s.id;
+                                return `
+                                    <div class="flex items-center justify-between text-xs py-1 px-2 rounded-lg ${isDimmed ? 'opacity-40' : 'bg-slate-950/40'}">
+                                        <span class="font-medium text-slate-300 w-16">${s.label}</span>
+                                        <div class="flex items-center gap-2">
+                                            <div class="flex gap-1 p-0.5 bg-slate-950 rounded border border-slate-800">
+                                                <div class="w-3 h-3 rounded-sm ${days >= 1 ? 'bg-blue-500' : 'bg-slate-800'}"></div>
+                                                <div class="w-3 h-3 rounded-sm ${days >= 2 ? 'bg-blue-500' : 'bg-slate-800'}"></div>
+                                            </div>
+                                            <div class="flex items-center gap-1">
+                                                <button onclick="modifyDays('${r.Resort.replace(/'/g, "\\'")}', '${s.key}', 1)" class="w-5 h-5 flex items-center justify-center bg-slate-800 hover:bg-blue-600 rounded text-white text-[11px] font-bold transition">+</button>
+                                                <button onclick="modifyDays('${r.Resort.replace(/'/g, "\\'")}', '${s.key}', -1)" class="w-5 h-5 flex items-center justify-center bg-slate-800 hover:bg-slate-700 rounded text-slate-400 text-[11px] font-bold transition">-</button>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="flex flex-col gap-0.5">
-                                        <button onclick="modifyDays('${r.Resort.replace(/'/g, "\\'")}', 1)" class="w-5 h-5 flex items-center justify-center bg-slate-800 hover:bg-blue-600 rounded text-xs text-white transition">+</button>
-                                        <button onclick="modifyDays('${r.Resort.replace(/'/g, "\\'")}', -1)" class="w-5 h-5 flex items-center justify-center bg-slate-800 hover:bg-slate-700 rounded text-xs text-slate-400 transition">-</button>
-                                    </div>
-                                </div>
-                            </div>
+                                `;
+                            }).join('')}
                         </div>
 
                         <!-- Weather Widget -->
@@ -297,7 +362,6 @@
 
                 grid.appendChild(card);
 
-                // If weather already loaded for this resort, render it
                 if (weatherCache[r.Resort]) {
                     updateCardWeather(r.Resort, weatherCache[r.Resort]);
                 }
