@@ -13,7 +13,7 @@
 </head>
 <body class="bg-slate-950 text-slate-100 font-sans antialiased min-h-screen p-4 md:p-8">
 
-    <div class="max-w-5xl mx-auto space-y-6">
+    <div class="max-w-6xl mx-auto space-y-6">
         
         <!-- Header & Pass Progress Bar -->
         <header class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl">
@@ -23,10 +23,9 @@
                         🎿 Indy Pass 2026
                         <span class="text-xs px-2.5 py-1 rounded-full bg-blue-500/20 text-blue-400 border border-blue-500/30">Unionville Base</span>
                     </h1>
-                    <p class="text-slate-400 text-sm mt-1">Season Consultant & Mountain Directory</p>
+                    <p class="text-slate-400 text-sm mt-1">Season Consultant, Weather & Mountain Directory</p>
                 </div>
                 
-                <!-- Season Burn-Down Counter -->
                 <div class="flex items-center gap-4 bg-slate-950/60 border border-slate-800/80 px-4 py-3 rounded-xl">
                     <div class="text-right">
                         <div class="text-xs text-slate-400 uppercase tracking-wider font-semibold">Pass Days Used</div>
@@ -47,11 +46,12 @@
             </div>
         </header>
 
-        <!-- Controls: Search, Filter, Sort -->
+        <!-- Controls: Filters & Sort -->
         <div class="flex flex-col md:flex-row justify-between items-stretch md:items-center gap-3">
             <!-- Filter Pills -->
             <div class="flex flex-wrap gap-2 text-xs font-semibold">
                 <button onclick="setFilter('all')" id="filter-all" class="filter-btn px-3.5 py-2 rounded-xl bg-blue-600 text-white transition">All Mountains</button>
+                <button onclick="setFilter('powder')" id="filter-powder" class="filter-btn px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-white transition">❄️ Powder Alert</button>
                 <button onclick="setFilter('daytrip')" id="filter-daytrip" class="filter-btn px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-white transition">⚡ Quick Hits (&lt; 2 hrs)</button>
                 <button onclick="setFilter('weekender')" id="filter-weekender" class="filter-btn px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-white transition">🏔️ Weekenders (3+ hrs)</button>
                 <button onclick="setFilter('available')" id="filter-available" class="filter-btn px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-white transition">Tickets Left</button>
@@ -60,16 +60,16 @@
             <!-- Sorting Buttons -->
             <div class="flex gap-2">
                 <button onclick="setSort('Drive Time')" id="sort-drive" class="flex-1 md:flex-none px-3.5 py-2 text-xs font-medium rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:bg-slate-800 transition flex items-center justify-center gap-1.5">
-                    <span>🚗 Sort: Drive</span>
+                    <span>🚗 Drive Time</span>
                 </button>
                 <button onclick="setSort('Vertical Drop')" id="sort-vert" class="flex-1 md:flex-none px-3.5 py-2 text-xs font-medium rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:bg-slate-800 transition flex items-center justify-center gap-1.5">
-                    <span>↓ Sort: Vert</span>
+                    <span>↓ Vertical</span>
                 </button>
             </div>
         </div>
 
         <!-- Mountain Cards Container -->
-        <div id="loading" class="text-center py-16 text-slate-400 animate-pulse">Syncing Indy Pass directory...</div>
+        <div id="loading" class="text-center py-16 text-slate-400 animate-pulse">Syncing Indy Pass directory & mountain forecasts...</div>
         <div id="resort-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
 
     </div>
@@ -78,7 +78,30 @@
         const API_URL = 'https://script.google.com/macros/s/AKfycbzGsR7rsHCVbj16HS9Qi2OgK583MhXyRozzOBaZ24Bf0ujdo-xo_3ZdfMOpn5GRqELz3g/exec';
         const BASE_ADDRESS = '538 Plainville Ave, Unionville, CT';
 
+        // Approximate coordinates for Open-Meteo alpine weather
+        const RESORT_COORDS = {
+            "Powder Ridge": { lat: 41.5037, lon: -72.7487 },
+            "Mohawk Mountain": { lat: 41.8348, lon: -73.3001 },
+            "Bousquet Mountain": { lat: 42.4173, lon: -73.2793 },
+            "Catamount": { lat: 42.1768, lon: -73.4754 },
+            "Berkshire East": { lat: 42.6176, lon: -72.8837 },
+            "Magic Mountain": { lat: 43.2012, lon: -72.7726 },
+            "Pats Peak": { lat: 43.1629, lon: -71.7981 },
+            "Saskadena Six": { lat: 43.6662, lon: -72.5398 },
+            "Ragged Mountain": { lat: 43.4842, lon: -71.9865 },
+            "Tenney Mountain": { lat: 43.7431, lon: -71.7765 },
+            "Middlebury Snowbowl": { lat: 43.9387, lon: -72.9587 },
+            "Waterville Valley": { lat: 43.9576, lon: -71.5234 },
+            "Cannon Mountain": { lat: 44.1565, lon: -71.6987 },
+            "Bolton Valley": { lat: 44.4192, lon: -72.8495 },
+            "Burke Mountain": { lat: 44.5714, lon: -71.8926 },
+            "Smugglers' Notch": { lat: 44.5539, lon: -72.7933 },
+            "Jay Peak": { lat: 44.9372, lon: -72.5056 },
+            "Saddleback Mountain": { lat: 44.9367, lon: -70.5053 }
+        };
+
         let rawResorts = [];
+        let weatherCache = {};
         let activeFilter = 'all';
         let activeSort = 'Drive Time';
 
@@ -89,31 +112,107 @@
                 rawResorts = data.resorts.filter(r => r.Resort && r.Resort.trim() !== '');
                 document.getElementById('loading').classList.add('hidden');
                 updateDashboard();
+
+                // Silently fetch weather in parallel
+                fetchWeatherForecasts();
             } catch (err) {
                 console.error(err);
-                document.getElementById('loading').innerHTML = '<span class="text-red-400">Failed to load data. Ensure Google Sheet is accessible.</span>';
+                document.getElementById('loading').innerHTML = '<span class="text-red-400">Failed to load data. Ensure Google Apps Script is accessible.</span>';
+            }
+        }
+
+        async function fetchWeatherForecasts() {
+            for (const r of rawResorts) {
+                const coords = RESORT_COORDS[r.Resort];
+                if (!coords) continue;
+
+                try {
+                    const url = `https://api.open-meteo.com/v1/forecast?latitude=${coords.lat}&longitude=${coords.lon}&daily=snowfall_sum,temperature_2m_max,temperature_2m_min,windspeed_10m_max&temperature_unit=fahrenheit&windspeed_unit=mph&precipitation_unit=inch&timezone=America%2FNew_York`;
+                    const res = await fetch(url);
+                    const wData = await res.json();
+                    
+                    if (wData && wData.daily) {
+                        const snow24 = wData.daily.snowfall_sum ? wData.daily.snowfall_sum[0] : 0;
+                        const tempMax = Math.round(wData.daily.temperature_2m_max[0]);
+                        const windMax = Math.round(wData.daily.windspeed_10m_max[0]);
+
+                        weatherCache[r.Resort] = {
+                            snowfall: snow24,
+                            tempMax: tempMax,
+                            wind: windMax
+                        };
+
+                        // Update the card live if rendered
+                        updateCardWeather(r.Resort, weatherCache[r.Resort]);
+                    }
+                } catch (e) {
+                    console.warn(`Weather fetch failed for ${r.Resort}`);
+                }
+            }
+        }
+
+        function updateCardWeather(resortName, w) {
+            const badge = document.getElementById(`weather-${resortName.replace(/[^a-zA-Z0-9]/g, '')}`);
+            if (!badge) return;
+
+            badge.innerHTML = `
+                <div class="flex items-center gap-2 text-slate-300 font-mono">
+                    <span>🌡️ ${w.tempMax}°F</span>
+                    <span>💨 ${w.wind}mph</span>
+                    ${w.snowfall > 0.5 ? `<span class="text-cyan-300 font-bold">❄️ ${w.snowfall}"</span>` : ''}
+                </div>
+            `;
+            badge.classList.remove('hidden');
+
+            if (w.snowfall >= 2.0) {
+                const powBadge = document.getElementById(`powder-badge-${resortName.replace(/[^a-zA-Z0-9]/g, '')}`);
+                if (powBadge) powBadge.classList.remove('hidden');
+            }
+        }
+
+        async function modifyDays(resortName, delta) {
+            const r = rawResorts.find(item => item.Resort === resortName);
+            if (!r) return;
+
+            const current = parseInt(r['Days Used']) || 0;
+            const updated = Math.max(0, Math.min(2, current + delta));
+            if (current === updated) return;
+
+            // Optimistic UI update
+            r['Days Used'] = updated;
+            updateDashboard();
+
+            // Background POST to Apps Script
+            try {
+                await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain' },
+                    body: JSON.stringify({ resort: resortName, delta: delta })
+                });
+            } catch (err) {
+                console.error("Save failed:", err);
             }
         }
 
         function updateDashboard() {
-            // Stats
             const totalUsed = rawResorts.reduce((sum, r) => sum + (parseInt(r['Days Used']) || 0), 0);
             document.getElementById('stat-used').innerText = totalUsed;
             const pct = Math.min(100, Math.round((totalUsed / 36) * 100));
             document.getElementById('stat-pct').innerText = `${pct}%`;
             document.getElementById('stat-progress-bar').style.width = `${pct}%`;
 
-            // Filter
             let list = rawResorts.filter(r => {
                 const drive = parseFloat(r['Drive Time']) || 0;
                 const days = parseInt(r['Days Used']) || 0;
+                const snow = weatherCache[r.Resort]?.snowfall || 0;
+
+                if (activeFilter === 'powder') return snow >= 1.0;
                 if (activeFilter === 'daytrip') return drive <= 2.0;
                 if (activeFilter === 'weekender') return drive >= 3.0;
                 if (activeFilter === 'available') return days < 2;
                 return true;
             });
 
-            // Sort
             list.sort((a, b) => {
                 const valA = parseFloat(String(a[activeSort]).replace(/[^0-9.]/g, '')) || 0;
                 const valB = parseFloat(String(b[activeSort]).replace(/[^0-9.]/g, '')) || 0;
@@ -140,6 +239,7 @@
             }
 
             resorts.forEach(r => {
+                const safeId = r.Resort.replace(/[^a-zA-Z0-9]/g, '');
                 const daysUsed = parseInt(r['Days Used']) || 0;
                 const isMaxed = daysUsed >= 2;
                 const navUrl = `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(BASE_ADDRESS)}&destination=${encodeURIComponent(r.Resort + ' Ski Resort, ' + r.State)}`;
@@ -155,6 +255,7 @@
                                 <div class="flex items-center gap-2">
                                     <h3 class="font-bold text-lg text-white group-hover:text-blue-400 transition-colors">${r.Resort}</h3>
                                     <span class="text-xs px-2 py-0.5 rounded-md bg-slate-800 text-slate-300 font-mono font-semibold">${r.State}</span>
+                                    <span id="powder-badge-${safeId}" class="hidden text-[10px] px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 font-bold">POWDER</span>
                                 </div>
                                 <div class="flex items-center gap-3 mt-2 text-xs font-medium text-slate-400">
                                     <span class="flex items-center gap-1">↓ <strong class="text-slate-200">${Number(r['Vertical Drop']).toLocaleString()}</strong> ft</span>
@@ -163,15 +264,24 @@
                                 </div>
                             </div>
 
-                            <!-- Pass Indicator Badge -->
+                            <!-- Pass Indicator & Quick Actions -->
                             <div class="flex flex-col items-end">
                                 <span class="text-[10px] tracking-wider uppercase text-slate-500 font-semibold mb-1">Indy Days</span>
-                                <div class="flex gap-1.5 p-1 bg-slate-950 rounded-lg border border-slate-800">
-                                    <div class="w-3.5 h-3.5 rounded-md ${daysUsed >= 1 ? 'bg-blue-500 shadow-sm shadow-blue-500/50' : 'bg-slate-800'}"></div>
-                                    <div class="w-3.5 h-3.5 rounded-md ${daysUsed >= 2 ? 'bg-blue-500 shadow-sm shadow-blue-500/50' : 'bg-slate-800'}"></div>
+                                <div class="flex items-center gap-2">
+                                    <div class="flex gap-1.5 p-1 bg-slate-950 rounded-lg border border-slate-800">
+                                        <div class="w-3.5 h-3.5 rounded-md ${daysUsed >= 1 ? 'bg-blue-500 shadow-sm shadow-blue-500/50' : 'bg-slate-800'}"></div>
+                                        <div class="w-3.5 h-3.5 rounded-md ${daysUsed >= 2 ? 'bg-blue-500 shadow-sm shadow-blue-500/50' : 'bg-slate-800'}"></div>
+                                    </div>
+                                    <div class="flex flex-col gap-0.5">
+                                        <button onclick="modifyDays('${r.Resort.replace(/'/g, "\\'")}', 1)" class="w-5 h-5 flex items-center justify-center bg-slate-800 hover:bg-blue-600 rounded text-xs text-white transition">+</button>
+                                        <button onclick="modifyDays('${r.Resort.replace(/'/g, "\\'")}', -1)" class="w-5 h-5 flex items-center justify-center bg-slate-800 hover:bg-slate-700 rounded text-xs text-slate-400 transition">-</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+
+                        <!-- Weather Widget -->
+                        <div id="weather-${safeId}" class="hidden mt-3 pt-2 border-t border-slate-800/40 text-xs"></div>
                     </div>
 
                     <!-- Action Bar -->
@@ -186,6 +296,11 @@
                 `;
 
                 grid.appendChild(card);
+
+                // If weather already loaded for this resort, render it
+                if (weatherCache[r.Resort]) {
+                    updateCardWeather(r.Resort, weatherCache[r.Resort]);
+                }
             });
         }
 
