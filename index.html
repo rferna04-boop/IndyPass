@@ -106,4 +106,271 @@
                 </button>
                 <button onclick="setSort('Vertical Drop')" id="sort-vert" class="px-3 py-1.5 font-medium rounded-lg bg-slate-950 border border-slate-800 text-slate-300 hover:bg-slate-800 transition">
                     ↓ Vertical
-                </
+                </button>
+            </div>
+        </div>
+
+        <!-- Mountain Cards Grid -->
+        <div id="loading" class="text-center py-16 text-slate-400 animate-pulse">Syncing 161 Indy Pass destinations...</div>
+        <div id="resort-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+
+    </div>
+
+    <script>
+        const API_URL = 'https://script.google.com/macros/s/AKfycbzGsR7rsHCVbj16HS9Qi2OgK583MhXyRozzOBaZ24Bf0ujdo-xo_3ZdfMOpn5GRqELz3g/exec';
+        const BASE_ADDRESS = '538 Plainville Ave, Unionville, CT';
+
+        const SKIERS = [
+            { id: 'Ricardo', key: 'Ricardo Days', label: 'Ricardo' },
+            { id: 'Lilli', key: 'Lilli Days', label: 'Lilli' },
+            { id: 'Alex', key: 'Alex Days', label: 'Alex' }
+        ];
+
+        let rawResorts = [];
+        let activeRegion = 'all';
+        let activeFilter = 'all';
+        let activeSort = 'Drive Time';
+        let activeSkier = 'all';
+        let searchQuery = '';
+
+        async function init() {
+            try {
+                const res = await fetch(API_URL);
+                const data = await res.json();
+                rawResorts = data.resorts.filter(r => r.Resort && r.Resort.trim() !== '');
+                document.getElementById('loading').classList.add('hidden');
+                updateDashboard();
+            } catch (err) {
+                console.error(err);
+                document.getElementById('loading').innerHTML = '<span class="text-red-400">Failed to load data. Ensure Google Apps Script is accessible.</span>';
+            }
+        }
+
+        async function modifyDays(resortName, userKey, delta) {
+            const r = rawResorts.find(item => item.Resort === resortName);
+            if (!r) return;
+
+            const current = parseInt(r[userKey]) || 0;
+            const updated = Math.max(0, Math.min(2, current + delta));
+            if (current === updated) return;
+
+            r[userKey] = updated;
+            updateDashboard();
+
+            try {
+                await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain' },
+                    body: JSON.stringify({ resort: resortName, userKey: userKey, delta: delta })
+                });
+            } catch (err) {
+                console.error("Save failed:", err);
+            }
+        }
+
+        function setActiveSkier(skier) {
+            activeSkier = skier;
+            document.querySelectorAll('.skier-tab').forEach(tab => {
+                tab.className = 'skier-tab px-3 py-1.5 rounded-lg text-slate-400 hover:text-white transition';
+            });
+            const activeTab = document.getElementById(`skier-tab-${skier}`);
+            if (activeTab) {
+                activeTab.className = 'skier-tab px-3 py-1.5 rounded-lg bg-blue-600 text-white font-semibold transition';
+            }
+            updateDashboard();
+        }
+
+        function setRegion(region) {
+            activeRegion = region;
+            document.querySelectorAll('.region-btn').forEach(btn => {
+                btn.className = 'region-btn px-4 py-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-white transition';
+            });
+            const activeBtn = document.getElementById(`region-${region}`);
+            if (activeBtn) {
+                activeBtn.className = 'region-btn px-4 py-2 rounded-xl bg-blue-600 text-white font-semibold shadow-md shadow-blue-600/30 transition';
+            }
+            updateDashboard();
+        }
+
+        function setFilter(type) {
+            activeFilter = type;
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.className = 'filter-btn px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-800 text-slate-400 hover:text-white transition';
+            });
+            const activeBtn = document.getElementById(`filter-${type}`);
+            if (activeBtn) {
+                activeBtn.className = 'filter-btn px-3 py-1.5 rounded-lg bg-blue-600 text-white font-semibold transition';
+            }
+            updateDashboard();
+        }
+
+        function setSort(type) {
+            activeSort = type;
+            updateDashboard();
+        }
+
+        function handleSearch() {
+            searchQuery = document.getElementById('search-input').value.toLowerCase().trim();
+            updateDashboard();
+        }
+
+        function updateDashboard() {
+            const rUsed = rawResorts.reduce((sum, r) => sum + (parseInt(r['Ricardo Days']) || 0), 0);
+            const lUsed = rawResorts.reduce((sum, r) => sum + (parseInt(r['Lilli Days']) || 0), 0);
+            const aUsed = rawResorts.reduce((sum, r) => sum + (parseInt(r['Alex Days']) || 0), 0);
+            const groupTotal = rUsed + lUsed + aUsed;
+
+            document.getElementById('stat-ricardo').innerText = rUsed;
+            document.getElementById('stat-lilli').innerText = lUsed;
+            document.getElementById('stat-alex').innerText = aUsed;
+            document.getElementById('stat-group-total').innerText = groupTotal;
+
+            let targetUsed = groupTotal;
+            let targetMax = rawResorts.length * 6; // 2 days each for 3 people
+            let label = "Group Pass Utilization";
+
+            if (activeSkier !== 'all') {
+                targetUsed = activeSkier === 'Ricardo' ? rUsed : (activeSkier === 'Lilli' ? lUsed : aUsed);
+                targetMax = rawResorts.length * 2;
+                label = `${activeSkier}'s Season Utilization`;
+            }
+
+            const pct = Math.min(100, Math.round((targetUsed / targetMax) * 100));
+            document.getElementById('progress-label').innerText = label;
+            document.getElementById('stat-pct').innerText = `${pct}% (${targetUsed}/${targetMax} tix)`;
+            document.getElementById('stat-progress-bar').style.width = `${pct}%`;
+
+            // Filter logic
+            let list = rawResorts.filter(r => {
+                const drive = parseFloat(r['Drive Time']) || 0;
+                const region = r['Region'] || '';
+
+                // Region filter
+                if (activeRegion !== 'all' && region !== activeRegion) return false;
+
+                // Search query
+                if (searchQuery) {
+                    const matchName = (r.Resort || '').toLowerCase().includes(searchQuery);
+                    const matchState = (r.State || '').toLowerCase().includes(searchQuery);
+                    if (!matchName && !matchState) return false;
+                }
+
+                // Trip type filter
+                if (activeFilter === 'daytrip') return drive <= 2.0;
+                if (activeFilter === 'weekender') return drive > 2.0 && drive <= 5.0;
+                if (activeFilter === 'flight') return drive > 5.0;
+                if (activeFilter === 'available') {
+                    if (activeSkier === 'all') {
+                        return (parseInt(r['Ricardo Days']) || 0) < 2 || (parseInt(r['Lilli Days']) || 0) < 2 || (parseInt(r['Alex Days']) || 0) < 2;
+                    } else {
+                        return (parseInt(r[`${activeSkier} Days`]) || 0) < 2;
+                    }
+                }
+                return true;
+            });
+
+            // Sorting
+            list.sort((a, b) => {
+                const valA = parseFloat(String(a[activeSort]).replace(/[^0-9.]/g, '')) || 0;
+                const valB = parseFloat(String(b[activeSort]).replace(/[^0-9.]/g, '')) || 0;
+                return activeSort === 'Vertical Drop' ? valB - valA : valA - valB;
+            });
+
+            // Deprioritize burned-out resorts
+            if (activeSkier !== 'all') {
+                list.sort((a, b) => {
+                    const maxA = (parseInt(a[`${activeSkier} Days`]) >= 2) ? 1 : 0;
+                    const maxB = (parseInt(b[`${activeSkier} Days`]) >= 2) ? 1 : 0;
+                    return maxA - maxB;
+                });
+            }
+
+            document.getElementById('resort-count-badge').innerText = `Showing ${list.length} of ${rawResorts.length} mountains`;
+            renderGrid(list);
+        }
+
+        function renderGrid(resorts) {
+            const grid = document.getElementById('resort-grid');
+            grid.innerHTML = '';
+
+            if (resorts.length === 0) {
+                grid.innerHTML = '<div class="col-span-full text-center py-16 text-slate-500">No mountains match your search criteria.</div>';
+                return;
+            }
+
+            resorts.forEach(r => {
+                const drive = parseFloat(r['Drive Time']) || 0;
+                const travelDisplay = drive > 8.0 ? '✈️ Fly / Long Haul' : `🚗 ${drive} hrs`;
+                const navUrl = `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(BASE_ADDRESS)}&destination=${encodeURIComponent(r.Resort + ' Ski Resort, ' + r.State)}`;
+                const trailMapUrl = `https://www.google.com/search?q=${encodeURIComponent(r.Resort + ' ' + r.State + ' ski trail map')}&btnI=1`;
+
+                const rDays = parseInt(r['Ricardo Days']) || 0;
+                const lDays = parseInt(r['Lilli Days']) || 0;
+                const aDays = parseInt(r['Alex Days']) || 0;
+
+                const isAllMaxed = rDays >= 2 && lDays >= 2 && aDays >= 2;
+                const isSelectedMaxed = activeSkier !== 'all' && (parseInt(r[`${activeSkier} Days`]) >= 2);
+
+                const card = document.createElement('div');
+                card.className = `group bg-slate-900 border rounded-2xl p-5 flex flex-col justify-between transition-all duration-200 ${(isAllMaxed || isSelectedMaxed) ? 'border-red-950/40 bg-slate-950/40 opacity-60' : 'border-slate-800 hover:border-slate-700 hover:shadow-lg'}`;
+
+                card.innerHTML = `
+                    <div>
+                        <div class="flex justify-between items-start gap-2">
+                            <div>
+                                <div class="flex items-center gap-2 flex-wrap">
+                                    <h3 class="font-bold text-lg text-white group-hover:text-blue-400 transition-colors">${r.Resort}</h3>
+                                    <span class="text-xs px-2 py-0.5 rounded-md bg-slate-800 text-slate-300 font-mono font-semibold">${r.State}</span>
+                                    <span class="text-[10px] px-2 py-0.5 rounded-md bg-slate-950 text-slate-400 border border-slate-800">${r.Region}</span>
+                                </div>
+                                <div class="flex items-center gap-3 mt-2 text-xs font-medium text-slate-400">
+                                    <span class="flex items-center gap-1">↓ <strong class="text-slate-200">${Number(r['Vertical Drop']).toLocaleString()}</strong> ft</span>
+                                    <span>&bull;</span>
+                                    <span class="flex items-center gap-1"><strong class="text-slate-200">${travelDisplay}</strong></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Skier Pass Steppers -->
+                        <div class="mt-4 pt-3 border-t border-slate-800/60 space-y-2">
+                            ${SKIERS.map(s => {
+                                const days = parseInt(r[s.key]) || 0;
+                                const isDimmed = activeSkier !== 'all' && activeSkier !== s.id;
+                                return `
+                                    <div class="flex items-center justify-between text-xs py-1 px-2 rounded-lg ${isDimmed ? 'opacity-40' : 'bg-slate-950/40'}">
+                                        <span class="font-medium text-slate-300 w-16">${s.label}</span>
+                                        <div class="flex items-center gap-2">
+                                            <div class="flex gap-1 p-0.5 bg-slate-950 rounded border border-slate-800">
+                                                <div class="w-3 h-3 rounded-sm ${days >= 1 ? 'bg-blue-500 shadow-sm shadow-blue-500/50' : 'bg-slate-800'}"></div>
+                                                <div class="w-3 h-3 rounded-sm ${days >= 2 ? 'bg-blue-500 shadow-sm shadow-blue-500/50' : 'bg-slate-800'}"></div>
+                                            </div>
+                                            <div class="flex items-center gap-1">
+                                                <button onclick="modifyDays('${r.Resort.replace(/'/g, "\\'")}', '${s.key}', 1)" class="w-5 h-5 flex items-center justify-center bg-slate-800 hover:bg-blue-600 rounded text-white text-[11px] font-bold transition">+</button>
+                                                <button onclick="modifyDays('${r.Resort.replace(/'/g, "\\'")}', '${s.key}', -1)" class="w-5 h-5 flex items-center justify-center bg-slate-800 hover:bg-slate-700 rounded text-slate-400 text-[11px] font-bold transition">-</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+
+                    <!-- Action Bar -->
+                    <div class="mt-5 pt-4 border-t border-slate-800/60 flex items-center justify-between text-xs">
+                        <a href="${navUrl}" target="_blank" rel="noopener" class="text-blue-400 hover:text-blue-300 font-semibold flex items-center gap-1 transition">
+                            Directions ↗
+                        </a>
+                        <a href="${trailMapUrl}" target="_blank" rel="noopener" class="text-slate-400 hover:text-slate-200 transition">
+                            Trail Map ↗
+                        </a>
+                    </div>
+                `;
+
+                grid.appendChild(card);
+            });
+        }
+
+        init();
+    </script>
+</body>
+</html>
