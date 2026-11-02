@@ -6,199 +6,207 @@
     <title>2026 Indy Ski Consultant</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Custom scrollbar for a native app feel */
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #0f172a; }
         ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
     </style>
 </head>
-<body class="bg-slate-900 text-slate-200 font-sans antialiased p-4 md:p-8">
+<body class="bg-slate-950 text-slate-100 font-sans antialiased min-h-screen p-4 md:p-8">
 
-    <div class="max-w-4xl mx-auto space-y-8">
+    <div class="max-w-5xl mx-auto space-y-6">
         
-        <!-- Header & Stats -->
-        <header class="flex flex-col md:flex-row justify-between items-start md:items-end border-b border-slate-700 pb-6 gap-4">
-            <div>
-                <h1 class="text-3xl font-bold text-white tracking-tight">2026 Indy Ski Platform</h1>
-                <p class="text-slate-400 mt-1">Unionville Basecamp &bull; Live Tracker</p>
-            </div>
-            <div class="flex gap-6 text-sm">
-                <div class="flex flex-col text-right">
-                    <span class="text-slate-400">Season Vert</span>
-                    <span id="total-vert" class="text-2xl font-semibold text-blue-400">0 ft</span>
+        <!-- Header & Pass Progress Bar -->
+        <header class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                    <h1 class="text-3xl font-extrabold tracking-tight text-white flex items-center gap-3">
+                        🎿 Indy Pass 2026
+                        <span class="text-xs px-2.5 py-1 rounded-full bg-blue-500/20 text-blue-400 border border-blue-500/30">Unionville Base</span>
+                    </h1>
+                    <p class="text-slate-400 text-sm mt-1">Season Consultant & Mountain Directory</p>
                 </div>
-                <div class="flex flex-col text-right">
-                    <span class="text-slate-400">Days Skied</span>
-                    <span id="total-days" class="text-2xl font-semibold text-blue-400">0</span>
+                
+                <!-- Season Burn-Down Counter -->
+                <div class="flex items-center gap-4 bg-slate-950/60 border border-slate-800/80 px-4 py-3 rounded-xl">
+                    <div class="text-right">
+                        <div class="text-xs text-slate-400 uppercase tracking-wider font-semibold">Pass Days Used</div>
+                        <div class="text-2xl font-black text-blue-400"><span id="stat-used">0</span> <span class="text-xs text-slate-500 font-normal">/ 36 potential</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Visual Progress Bar -->
+            <div class="mt-4 pt-4 border-t border-slate-800/60">
+                <div class="flex justify-between text-xs text-slate-400 mb-1.5">
+                    <span>Season Utilization</span>
+                    <span id="stat-pct">0%</span>
+                </div>
+                <div class="w-full bg-slate-800 h-2.5 rounded-full overflow-hidden">
+                    <div id="stat-progress-bar" class="bg-gradient-to-r from-blue-500 to-indigo-500 h-full w-0 transition-all duration-500"></div>
                 </div>
             </div>
         </header>
 
-        <!-- Loading State -->
-        <div id="loading" class="animate-pulse flex space-x-4 py-12 justify-center">
-            <div class="text-slate-400 font-medium">Syncing mountain data...</div>
+        <!-- Controls: Search, Filter, Sort -->
+        <div class="flex flex-col md:flex-row justify-between items-stretch md:items-center gap-3">
+            <!-- Filter Pills -->
+            <div class="flex flex-wrap gap-2 text-xs font-semibold">
+                <button onclick="setFilter('all')" id="filter-all" class="filter-btn px-3.5 py-2 rounded-xl bg-blue-600 text-white transition">All Mountains</button>
+                <button onclick="setFilter('daytrip')" id="filter-daytrip" class="filter-btn px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-white transition">⚡ Quick Hits (&lt; 2 hrs)</button>
+                <button onclick="setFilter('weekender')" id="filter-weekender" class="filter-btn px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-white transition">🏔️ Weekenders (3+ hrs)</button>
+                <button onclick="setFilter('available')" id="filter-available" class="filter-btn px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-white transition">Tickets Left</button>
+            </div>
+
+            <!-- Sorting Buttons -->
+            <div class="flex gap-2">
+                <button onclick="setSort('Drive Time')" id="sort-drive" class="flex-1 md:flex-none px-3.5 py-2 text-xs font-medium rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:bg-slate-800 transition flex items-center justify-center gap-1.5">
+                    <span>🚗 Sort: Drive</span>
+                </button>
+                <button onclick="setSort('Vertical Drop')" id="sort-vert" class="flex-1 md:flex-none px-3.5 py-2 text-xs font-medium rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:bg-slate-800 transition flex items-center justify-center gap-1.5">
+                    <span>↓ Sort: Vert</span>
+                </button>
+            </div>
         </div>
 
-        <!-- Dashboard Content (Hidden until loaded) -->
-        <div id="dashboard" class="hidden space-y-8">
-            
-            <!-- Resort Sorter -->
-            <section>
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-xl font-semibold text-white">Indy Pass Targets</h2>
-                    <div class="flex gap-2">
-                        <button onclick="sortResorts('Vertical Drop')" class="px-3 py-1 text-xs font-medium bg-slate-800 hover:bg-slate-700 rounded transition">Sort by Vert</button>
-                        <button onclick="sortResorts('Drive Time')" class="px-3 py-1 text-xs font-medium bg-slate-800 hover:bg-slate-700 rounded transition">Sort by Drive</button>
-                    </div>
-                </div>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="resort-grid">
-                    <!-- Resort Cards Injected Here -->
-                </div>
-            </section>
+        <!-- Mountain Cards Container -->
+        <div id="loading" class="text-center py-16 text-slate-400 animate-pulse">Syncing Indy Pass directory...</div>
+        <div id="resort-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
 
-            <!-- Slopes Log -->
-            <section>
-                <h2 class="text-xl font-semibold text-white mb-4">Slopes Sync Log</h2>
-                <div class="bg-slate-800 rounded-lg overflow-hidden border border-slate-700">
-                    <table class="w-full text-sm text-left">
-                        <thead class="text-xs text-slate-400 uppercase bg-slate-900/50">
-                            <tr>
-                                <th class="px-4 py-3">Date</th>
-                                <th class="px-4 py-3">Resort</th>
-                                <th class="px-4 py-3 text-right">Vert (ft)</th>
-                                <th class="px-4 py-3 text-right">Speed (mph)</th>
-                            </tr>
-                        </thead>
-                        <tbody id="log-table" class="divide-y divide-slate-700/50">
-                            <!-- Log Rows Injected Here -->
-                        </tbody>
-                    </table>
-                </div>
-            </section>
-        </div>
     </div>
 
     <script>
-        // Your Google Apps Script API URL
         const API_URL = 'https://script.google.com/macros/s/AKfycbzGsR7rsHCVbj16HS9Qi2OgK583MhXyRozzOBaZ24Bf0ujdo-xo_3ZdfMOpn5GRqELz3g/exec';
-        
-        let resortData = [];
-        let logData = [];
+        const BASE_ADDRESS = '538 Plainville Ave, Unionville, CT';
 
-        async function fetchData() {
+        let rawResorts = [];
+        let activeFilter = 'all';
+        let activeSort = 'Drive Time';
+
+        async function init() {
             try {
-                const response = await fetch(API_URL);
-                const data = await response.json();
-                
-                resortData = data.resorts.filter(r => r.Resort); // Filter empty rows
-                logData = data.logs.filter(l => l.Date);
-
-                updateStats();
-                renderResorts(resortData);
-                renderLogs(logData);
-
+                const res = await fetch(API_URL);
+                const data = await res.json();
+                rawResorts = data.resorts.filter(r => r.Resort && r.Resort.trim() !== '');
                 document.getElementById('loading').classList.add('hidden');
-                document.getElementById('dashboard').classList.remove('hidden');
-            } catch (error) {
-                console.error("Error fetching data:", error);
-                document.getElementById('loading').innerHTML = "<span class='text-red-400'>Failed to sync data. Check API URL.</span>";
+                updateDashboard();
+            } catch (err) {
+                console.error(err);
+                document.getElementById('loading').innerHTML = '<span class="text-red-400">Failed to load data. Ensure Google Sheet is accessible.</span>';
             }
         }
 
-        function updateStats() {
-            const totalVert = logData.reduce((sum, log) => {
-                const val = parseInt(String(log['Vertical Feet']).replace(/,/g, '')) || 0;
-                return sum + val;
-            }, 0);
-            
-            document.getElementById('total-vert').innerText = totalVert.toLocaleString() + ' ft';
-            document.getElementById('total-days').innerText = logData.length;
-        }
+        function updateDashboard() {
+            // Stats
+            const totalUsed = rawResorts.reduce((sum, r) => sum + (parseInt(r['Days Used']) || 0), 0);
+            document.getElementById('stat-used').innerText = totalUsed;
+            const pct = Math.min(100, Math.round((totalUsed / 36) * 100));
+            document.getElementById('stat-pct').innerText = `${pct}%`;
+            document.getElementById('stat-progress-bar').style.width = `${pct}%`;
 
-        function renderResorts(resorts) {
-            const grid = document.getElementById('resort-grid');
-            grid.innerHTML = '';
-
-            resorts.forEach(resort => {
-                // Handle Burn-down logic
-                const daysUsed = parseInt(resort['Days Used']) || 0;
-                const isMaxed = daysUsed >= 2;
-                
-                const card = document.createElement('div');
-                card.className = `p-4 rounded-lg border ${isMaxed ? 'bg-slate-900 border-red-900/50 opacity-60' : 'bg-slate-800 border-slate-700'} flex justify-between items-center`;
-                
-                card.innerHTML = `
-                    <div>
-                        <div class="flex items-center gap-2">
-                            <h3 class="font-bold text-white ${isMaxed ? 'line-through decoration-red-500' : ''}">${resort.Resort}</h3>
-                            <span class="text-xs px-2 py-0.5 rounded bg-slate-700 text-slate-300">${resort.State}</span>
-                        </div>
-                        <div class="text-sm text-slate-400 mt-1 flex gap-3">
-                            <span><i class="opacity-50">↓</i> ${resort['Vertical Drop']} ft</span>
-                            <span><i class="opacity-50">🚗</i> ${resort['Drive Time']}</span>
-                        </div>
-                    </div>
-                    <div class="text-right">
-                        <div class="text-xs text-slate-500 mb-1">Indy Days</div>
-                        <div class="flex gap-1">
-                            <div class="w-3 h-3 rounded-full ${daysUsed >= 1 ? 'bg-blue-500' : 'bg-slate-600'}"></div>
-                            <div class="w-3 h-3 rounded-full ${daysUsed >= 2 ? 'bg-blue-500' : 'bg-slate-600'}"></div>
-                        </div>
-                    </div>
-                `;
-                grid.appendChild(card);
+            // Filter
+            let list = rawResorts.filter(r => {
+                const drive = parseFloat(r['Drive Time']) || 0;
+                const days = parseInt(r['Days Used']) || 0;
+                if (activeFilter === 'daytrip') return drive <= 2.0;
+                if (activeFilter === 'weekender') return drive >= 3.0;
+                if (activeFilter === 'available') return days < 2;
+                return true;
             });
-        }
 
-        function renderLogs(logs) {
-            const table = document.getElementById('log-table');
-            table.innerHTML = '';
-            
-            // Sort logs newest first
-            const sortedLogs = [...logs].sort((a, b) => new Date(b.Date) - new Date(a.Date));
-
-            if (sortedLogs.length === 0) {
-                table.innerHTML = '<tr><td colspan="4" class="px-4 py-6 text-center text-slate-500">No days logged yet. Hit the mountain!</td></tr>';
-                return;
-            }
-
-            sortedLogs.forEach(log => {
-                const date = new Date(log.Date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-                const row = document.createElement('tr');
-                row.className = "hover:bg-slate-750 transition-colors";
-                row.innerHTML = `
-                    <td class="px-4 py-3 text-slate-300">${date}</td>
-                    <td class="px-4 py-3 font-medium text-white">${log.Resort}</td>
-                    <td class="px-4 py-3 text-right text-blue-400 font-mono">${log['Vertical Feet']}</td>
-                    <td class="px-4 py-3 text-right text-slate-400">${log['Top Speed']}</td>
-                `;
-                table.appendChild(row);
+            // Sort
+            list.sort((a, b) => {
+                const valA = parseFloat(String(a[activeSort]).replace(/[^0-9.]/g, '')) || 0;
+                const valB = parseFloat(String(b[activeSort]).replace(/[^0-9.]/g, '')) || 0;
+                return activeSort === 'Vertical Drop' ? valB - valA : valA - valB;
             });
-        }
 
-        function sortResorts(key) {
-            const sorted = [...resortData].sort((a, b) => {
-                // Strip commas and text to parse actual numbers for accurate sorting
-                const valA = parseFloat(String(a[key]).replace(/[^0-9.]/g, '')) || 0;
-                const valB = parseFloat(String(b[key]).replace(/[^0-9.]/g, '')) || 0;
-                
-                // For Vertical Drop, sort highest to lowest. For Drive Time, sort lowest to highest.
-                return key === 'Vertical Drop' ? valB - valA : valA - valB;
-            });
-            
-            // Push resorts with 2 days used to the bottom regardless of sort
-            sorted.sort((a, b) => {
+            // Deprioritize burned-out resorts
+            list.sort((a, b) => {
                 const maxA = (parseInt(a['Days Used']) >= 2) ? 1 : 0;
                 const maxB = (parseInt(b['Days Used']) >= 2) ? 1 : 0;
                 return maxA - maxB;
             });
 
-            renderResorts(sorted);
+            renderGrid(list);
         }
 
-        // Boot up
-        fetchData();
+        function renderGrid(resorts) {
+            const grid = document.getElementById('resort-grid');
+            grid.innerHTML = '';
+
+            if (resorts.length === 0) {
+                grid.innerHTML = '<div class="col-span-full text-center py-12 text-slate-500">No mountains match the current filter.</div>';
+                return;
+            }
+
+            resorts.forEach(r => {
+                const daysUsed = parseInt(r['Days Used']) || 0;
+                const isMaxed = daysUsed >= 2;
+                const navUrl = `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(BASE_ADDRESS)}&destination=${encodeURIComponent(r.Resort + ' Ski Resort, ' + r.State)}`;
+                const trailMapUrl = `https://www.google.com/search?q=${encodeURIComponent(r.Resort + ' ' + r.State + ' ski trail map')}&btnI=1`;
+
+                const card = document.createElement('div');
+                card.className = `group bg-slate-900 border rounded-2xl p-5 flex flex-col justify-between transition-all duration-200 ${isMaxed ? 'border-red-950/40 bg-slate-950/40 opacity-50' : 'border-slate-800 hover:border-slate-700 hover:shadow-lg'}`;
+
+                card.innerHTML = `
+                    <div>
+                        <div class="flex justify-between items-start gap-2">
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <h3 class="font-bold text-lg text-white group-hover:text-blue-400 transition-colors">${r.Resort}</h3>
+                                    <span class="text-xs px-2 py-0.5 rounded-md bg-slate-800 text-slate-300 font-mono font-semibold">${r.State}</span>
+                                </div>
+                                <div class="flex items-center gap-3 mt-2 text-xs font-medium text-slate-400">
+                                    <span class="flex items-center gap-1">↓ <strong class="text-slate-200">${Number(r['Vertical Drop']).toLocaleString()}</strong> ft</span>
+                                    <span>&bull;</span>
+                                    <span class="flex items-center gap-1">🚗 <strong class="text-slate-200">${r['Drive Time']}</strong> hrs</span>
+                                </div>
+                            </div>
+
+                            <!-- Pass Indicator Badge -->
+                            <div class="flex flex-col items-end">
+                                <span class="text-[10px] tracking-wider uppercase text-slate-500 font-semibold mb-1">Indy Days</span>
+                                <div class="flex gap-1.5 p-1 bg-slate-950 rounded-lg border border-slate-800">
+                                    <div class="w-3.5 h-3.5 rounded-md ${daysUsed >= 1 ? 'bg-blue-500 shadow-sm shadow-blue-500/50' : 'bg-slate-800'}"></div>
+                                    <div class="w-3.5 h-3.5 rounded-md ${daysUsed >= 2 ? 'bg-blue-500 shadow-sm shadow-blue-500/50' : 'bg-slate-800'}"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Bar -->
+                    <div class="mt-5 pt-4 border-t border-slate-800/60 flex items-center justify-between text-xs">
+                        <a href="${navUrl}" target="_blank" rel="noopener" class="text-blue-400 hover:text-blue-300 font-semibold flex items-center gap-1 transition">
+                            Directions ↗
+                        </a>
+                        <a href="${trailMapUrl}" target="_blank" rel="noopener" class="text-slate-400 hover:text-slate-200 transition">
+                            Trail Map ↗
+                        </a>
+                    </div>
+                `;
+
+                grid.appendChild(card);
+            });
+        }
+
+        function setFilter(type) {
+            activeFilter = type;
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.className = 'filter-btn px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-white transition';
+            });
+            const activeBtn = document.getElementById(`filter-${type}`);
+            if (activeBtn) {
+                activeBtn.className = 'filter-btn px-3.5 py-2 rounded-xl bg-blue-600 text-white font-semibold shadow-md shadow-blue-600/30 transition';
+            }
+            updateDashboard();
+        }
+
+        function setSort(type) {
+            activeSort = type;
+            updateDashboard();
+        }
+
+        init();
     </script>
 </body>
 </html>
